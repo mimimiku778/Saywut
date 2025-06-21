@@ -9,7 +9,7 @@ function App() {
   const { gameState, submitGuess, nextQuestion, resetGame, updateUserInput, changeDifficulty } = useGameState()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100">
+    <div className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-400 retro">
       <Header score={gameState.score} totalQuestions={gameState.totalQuestions} />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
@@ -51,7 +51,7 @@ function App() {
         </div>
 
         {/* フッター */}
-        <footer className="mt-16 text-center text-gray-500 text-sm">
+        <footer className="mt-16 text-center text-sm retro">
           <p>🤖 AIクイズゲーム - React版</p>
           <p className="mt-1">AIに言葉を当てさせるシンプルなゲーム</p>
         </footer>

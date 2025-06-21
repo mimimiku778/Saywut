@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+.retro {
+  font-family:
+    "Press Start 2P",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* 8bit style animations */
+@keyframes pixelate {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.retro:hover {
+  animation: pixelate 0.3s ease-in-out;
+}
+
+/* Custom 8bit text shadow effects */
+.retro-shadow {
+  text-shadow: 2px 2px 0px #000000;
+}
+
+/* 8bit style scrollbar */
+.retro::-webkit-scrollbar {
+  width: 12px;
+}
+
+.retro::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  border: 2px solid #000000;
+}
+
+.retro::-webkit-scrollbar-thumb {
+  background: #808080;
+  border: 2px solid #000000;
+}
+
+.retro::-webkit-scrollbar-thumb:hover {
+  background: #606060;
+}

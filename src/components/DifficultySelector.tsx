@@ -1,5 +1,7 @@
 import React from 'react'
 import type { DifficultyLevel } from '../data/topics'
+import { Button } from '@/components/ui/8bit/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/8bit/card'
 
 interface DifficultySelectorProps {
   currentDifficulty: DifficultyLevel
@@ -11,35 +13,41 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   onDifficultyChange,
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">難易度選択</h3>
-      <div className="flex space-x-4">
-        <button
-          onClick={() => onDifficultyChange('normal')}
-          className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-            currentDifficulty === 'normal'
-              ? 'bg-blue-500 text-white shadow-md transform scale-105'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:transform hover:scale-105'
-          }`}
-        >
-          <div className="text-center">
-            <div className="text-lg font-bold">ノーマル</div>
-          </div>
-        </button>
-        
-        <button
-          onClick={() => onDifficultyChange('hard')}
-          className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-            currentDifficulty === 'hard'
-              ? 'bg-red-500 text-white shadow-md transform scale-105'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:transform hover:scale-105'
-          }`}
-        >
-          <div className="text-center">
-            <div className="text-lg font-bold">ハード</div>
-          </div>
-        </button>
-      </div>
-    </div>
+    <Card className="retro">
+      <CardHeader>
+        <CardTitle className="text-center retro">難易度選択</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex space-x-4">
+          <Button
+            onClick={() => onDifficultyChange('normal')}
+            className={`flex-1 py-3 retro ${
+              currentDifficulty === 'normal'
+                ? 'bg-blue-600 text-white'
+                : 'bg-secondary text-secondary-foreground'
+            }`}
+            font="retro"
+          >
+            <div className="text-center">
+              <div className="text-lg font-bold">ノーマル</div>
+            </div>
+          </Button>
+          
+          <Button
+            onClick={() => onDifficultyChange('hard')}
+            className={`flex-1 py-3 retro ${
+              currentDifficulty === 'hard'
+                ? 'bg-red-600 text-white'
+                : 'bg-secondary text-secondary-foreground'
+            }`}
+            font="retro"
+          >
+            <div className="text-center">
+              <div className="text-lg font-bold">ハード</div>
+            </div>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

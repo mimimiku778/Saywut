@@ -1,19 +1,63 @@
+@import './components/ui/8bit/styles/retro.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply font-sans antialiased;
+  :root {
+    /* 8bit/NES color palette */
+    --background: 210 100% 95%; /* Light blue-white */
+    --foreground: 0 0% 0%; /* Pure black */
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 0 0% 0%; /* Black */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 220 100% 40%; /* Classic blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 30% 85%; /* Light gray-blue */
+    --secondary-foreground: 0 0% 20%;
+    --muted: 200 30% 85%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 200 30% 85%;
+    --accent-foreground: 0 0% 20%;
+    --destructive: 0 100% 50%; /* Bright red */
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 0%; /* Black borders for pixelated look */
+    --input: 0 0% 0%;
+    --ring: 220 100% 40%;
+    --radius: 0rem; /* No rounded corners for 8bit look */
+  }
+
+  .dark {
+    /* Dark 8bit theme - like a classic game console */
+    --background: 220 20% 15%; /* Dark blue-gray */
+    --foreground: 0 0% 95%; /* Near white */
+    --card: 220 20% 20%;
+    --card-foreground: 0 0% 95%;
+    --popover: 220 20% 20%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 120 100% 50%; /* Bright green */
+    --primary-foreground: 0 0% 0%;
+    --secondary: 220 20% 25%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 220 20% 25%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 220 20% 25%;
+    --accent-foreground: 0 0% 90%;
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 60%;
+    --input: 0 0% 60%;
+    --ring: 120 100% 50%;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98];
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  .card {
-    @apply bg-white rounded-2xl shadow-xl p-8 border border-gray-100;
+  body {
+    @apply bg-background text-foreground;
   }
 }

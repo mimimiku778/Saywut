@@ -1,5 +1,8 @@
 import React from 'react'
 import type { DifficultyLevel } from '../data/topics'
+import { Button } from '@/components/ui/8bit/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/8bit/card'
+import { Label } from '@/components/ui/8bit/label'
 
 interface GameBoardProps {
   currentTopic: string
@@ -28,58 +31,61 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center space-x-4 mb-2">
-          <h2 className="text-lg font-medium text-gray-600">お題</h2>
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+    <Card className="retro">
+      <CardHeader className="text-center pb-4">
+        <div className="flex items-center justify-center space-x-4 mb-4">
+          <h2 className="text-lg font-medium">お題</h2>
+          <span className={`px-3 py-1 text-xs font-medium retro ${
             difficulty === 'hard' 
-              ? 'bg-red-100 text-red-700' 
-              : 'bg-blue-100 text-blue-700'
+              ? 'bg-red-500 text-white' 
+              : 'bg-blue-500 text-white'
           }`}>
             {difficulty === 'hard' ? 'ハード' : 'ノーマル'}
           </span>
         </div>
-        <div className={`text-white rounded-xl py-6 px-8 ${
+        <div className={`text-white py-6 px-8 retro ${
           difficulty === 'hard'
-            ? 'bg-gradient-to-r from-red-500 to-pink-600'
-            : 'bg-gradient-to-r from-blue-500 to-purple-600'
+            ? 'bg-red-600'
+            : 'bg-blue-600'
         }`}>
-          <span className="text-4xl font-bold">{currentTopic}</span>
+          <span className="text-4xl font-bold retro">{currentTopic}</span>
         </div>
-        <p className="text-sm text-gray-500 mt-3">上記の言葉を使わずに特徴を説明してください</p>
-      </div>
+        <p className="text-sm mt-3 retro">上記の言葉を使わずに特徴を説明してください</p>
+      </CardHeader>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-            特徴を説明してください
-          </label>
-          <textarea
-            id="description"
-            value={userInput}
-            onChange={(e) => onInputChange(e.target.value)}
-            placeholder={`「${currentTopic}」を使わずに特徴を説明してください...`}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none h-32 transition-all duration-200"
-            disabled={disabled}
-          />
-        </div>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Label htmlFor="description" className="retro">
+              特徴を説明してください
+            </Label>
+            <textarea
+              id="description"
+              value={userInput}
+              onChange={(e) => onInputChange(e.target.value)}
+              placeholder={`「${currentTopic}」を使わずに特徴を説明してください...`}
+              className="w-full px-4 py-3 border-2 border-foreground focus:outline-none focus:border-primary resize-none h-32 mt-2 retro bg-background"
+              disabled={disabled}
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={disabled || !userInput.trim() || isLoading}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-        >
-          {isLoading ? (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              <span>AIが考え中...</span>
-            </div>
-          ) : (
-            'AIに推測させる'
-          )}
-        </button>
-      </form>
-    </div>
+          <Button
+            type="submit"
+            disabled={disabled || !userInput.trim() || isLoading}
+            className="w-full py-4 retro"
+            font="retro"
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-5 h-5 border-2 border-current border-t-transparent animate-spin"></div>
+                <span>AIが考え中...</span>
+              </div>
+            ) : (
+              'AIに推測させる'
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }
