@@ -45,12 +45,6 @@ export class ChromeAIService extends BaseAIService {
 
       // 新しいAPI仕様を使用してモデルを作成
       this.model = await (globalThis as any).LanguageModel.create({
-        initialPrompts: [
-          {
-            role: 'system',
-            content: 'あなたは推理ゲームのプレイヤーです。ユーザーの説明から何を指しているかを推測したり、入力の妥当性を判定したりします。',
-          },
-        ],
         temperature: 0.7,
         topK: 3,
       })
@@ -76,6 +70,7 @@ export class ChromeAIService extends BaseAIService {
       const prompt = this.createPrompt(userInput)
 
       // 新しい仕様では単純にpromptメソッドを使用
+      console.log(prompt)
       const responseText = await this.model.prompt(prompt)
 
       return this.parseAIResponse(responseText)

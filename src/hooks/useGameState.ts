@@ -59,10 +59,11 @@ export const useGameState = () => {
       const validationText = validationResponse.response.trim()
       let isInputValid = false
       let validationReason = ''
+      console.log('検証結果:', validationText)
 
-      if (validationText.startsWith('OK')) {
+      if (validationText.includes('OK')) {
         isInputValid = true
-      } else if (validationText.startsWith('NG')) {
+      } else if (validationText.includes('NG')) {
         isInputValid = false
         validationReason = validationText.replace(/^NG[：:]?\s*/, '') || '入力内容がルールに適合していません。'
       } else {
@@ -85,6 +86,7 @@ export const useGameState = () => {
 
       // 第2段階: AIによる推理
       const response = await aiService.generateResponse(gameState.userInput, gameState.currentTopic)
+      console.log('AI応答:', response.response)
 
       // AIのレスポンスに正解の単語が含まれているかで判定
       const isCorrect = response.response.includes(gameState.currentTopic)

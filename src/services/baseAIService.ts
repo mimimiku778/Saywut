@@ -8,7 +8,6 @@ import { ERROR_MESSAGES } from '../constants'
  * AIサービスの基底クラス
  */
 export abstract class BaseAIService implements IAIService {
-
   abstract generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse>
   abstract getServiceName(): string
   abstract isAvailable(): Promise<boolean>
@@ -33,6 +32,7 @@ export abstract class BaseAIService implements IAIService {
    * 入力値検証用のプロンプトを作成する
    */
   protected createValidationPrompt(userInput: string, correctAnswer: string): string {
+    console.log(createInputValidationPrompt(userInput, correctAnswer))
     return createInputValidationPrompt(userInput, correctAnswer)
   }
 
@@ -41,7 +41,7 @@ export abstract class BaseAIService implements IAIService {
    */
   protected parseAIResponse(responseText: string): AIResponse {
     return {
-      response: responseText.trim()
+      response: responseText.trim(),
     }
   }
 
