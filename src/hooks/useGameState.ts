@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { GameState } from '../types'
 import { AIServiceManager, aiService } from '../services/aiService'
+import { getRandomTopic } from '../data'
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -18,7 +19,7 @@ export const useGameState = () => {
     const initializeGame = async () => {
       try {
         await AIServiceManager.initialize()
-        const initialTopic = aiService.getRandomTopic()
+        const initialTopic = getRandomTopic()
         setGameState((prev) => ({ ...prev, currentTopic: initialTopic }))
       } catch (error) {
         console.error('AIサービスの初期化に失敗しました:', error)
@@ -65,7 +66,7 @@ export const useGameState = () => {
 
   const nextQuestion = useCallback(async () => {
     try {
-      const newTopic = aiService.getRandomTopic()
+      const newTopic = getRandomTopic()
       setGameState((prev) => ({
         ...prev,
         currentTopic: newTopic,
@@ -80,7 +81,7 @@ export const useGameState = () => {
 
   const resetGame = useCallback(async () => {
     try {
-      const newTopic = aiService.getRandomTopic()
+      const newTopic = getRandomTopic()
       setGameState({
         currentTopic: newTopic,
         userInput: '',

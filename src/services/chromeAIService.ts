@@ -1,5 +1,7 @@
 import { AIResponse } from '../types'
 import { BaseAIService } from './baseAIService'
+import { createChromeAISystemPrompt } from '../prompts'
+import { ERROR_MESSAGES } from '../constants'
 
 /**
  * Chrome Built-in AI (Gemini Nano) を使用するサービス
@@ -14,12 +16,13 @@ export class ChromeAIService extends BaseAIService {
 
   async isAvailable(): Promise<boolean> {
     try {
-      if (!window.ai?.languageModel) {
+      // 新しい仕様ではLanguageModelグローバルオブジェクトを使用
+      if (typeof (globalThis as any).LanguageModel === 'undefined') {
         return false
       }
 
-      const capabilities = await window.ai.languageModel.capabilities()
-      return capabilities.available === 'readily' || capabilities.available === 'after-download'
+      const availability = await (globalThis as any).LanguageModel.availability()
+      return availability !== 'unavailable'
     } catch (error) {
       console.error('Chrome AI 利用可能性チェックエラー:', error)
       return false
@@ -32,19 +35,23 @@ export class ChromeAIService extends BaseAIService {
         return true
       }
 
-      if (!window.ai?.languageModel) {
+      if (typeof (globalThis as any).LanguageModel === 'undefined') {
         return false
       }
 
-      const capabilities = await window.ai.languageModel.capabilities()
-      if (capabilities.available !== 'readily' && capabilities.available !== 'after-download') {
+      const availability = await (globalThis as any).LanguageModel.availability()
+      if (availability === 'unavailable') {
         return false
       }
 
-      // 最新のAPI構文を使用してモデルを作成
-      this.model = await window.ai.languageModel.create({
-        systemPrompt:
-          'あなたは推理ゲームのプレイヤーです。ユーザーの説明から何を指しているかを推測してください。JSON形式で回答し、guess（推測）、reasoning（理由）、confidence（確信度0-1）を含めてください。',
+      // 新しいAPI仕様を使用してモデルを作成
+      this.model = await (globalThis as any).LanguageModel.create({
+        initialPrompts: [
+          {
+            role: 'system',
+            content: createChromeAISystemPrompt(''),
+          },
+        ],
         temperature: 0.7,
         topK: 3,
       })
@@ -64,26 +71,18 @@ export class ChromeAIService extends BaseAIService {
       // モデルの初期化を確認
       const initialized = await this.initializeModel()
       if (!initialized) {
-        return this.createErrorResponse('Chrome AI が利用できません')
+        return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_UNAVAILABLE)
       }
 
       const prompt = this.createPrompt(userInput, correctAnswer)
 
-      // ストリーミング機能がある場合は使用、なければ通常のpromptを使用
-      let responseText = ''
-      if (this.model.promptStreaming) {
-        const stream = this.model.promptStreaming(prompt)
-        for await (const chunk of stream) {
-          responseText += chunk
-        }
-      } else {
-        responseText = await this.model.prompt(prompt)
-      }
+      // 新しい仕様では単純にpromptメソッドを使用
+      const responseText = await this.model.prompt(prompt)
 
       return this.parseAIResponse(responseText)
     } catch (error) {
       console.error('Chrome AI エラー:', error)
-      return this.createErrorResponse('Chrome AIでエラーが発生しました。')
+      return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_ERROR)
     }
   }
 

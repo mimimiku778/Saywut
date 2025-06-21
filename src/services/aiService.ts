@@ -1,6 +1,7 @@
 import { AIResponse } from '../types'
 import { IAIService, AIServiceType } from './types'
 import { AIServiceFactory } from './aiServiceFactory'
+import { getRandomTopic } from '../data'
 
 /**
  * AIサービス管理クラス
@@ -110,39 +111,7 @@ export const aiService = {
   },
 
   getRandomTopic(): string {
-    // 基本的なトピックリストを直接返す（サービスに依存しない）
-    const topics = [
-      '桜',
-      'ラーメン',
-      '富士山',
-      '電車',
-      '猫',
-      'スマートフォン',
-      '寿司',
-      '本',
-      'コーヒー',
-      '雨',
-      'ピアノ',
-      '海',
-      '花火',
-      '雪',
-      '太陽',
-      '月',
-      '星',
-      '風',
-      '虹',
-      '蝶',
-      '鳥',
-      '犬',
-      '魚',
-      '花',
-      '木',
-      '川',
-      '山',
-      '森',
-      '空',
-    ]
-    return topics[Math.floor(Math.random() * topics.length)]
+    return getRandomTopic()
   },
 
   async switchService(serviceType: AIServiceType): Promise<void> {

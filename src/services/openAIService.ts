@@ -1,6 +1,7 @@
 import OpenAI from 'openai'
 import { AIResponse } from '../types'
 import { BaseAIService } from './baseAIService'
+import { ERROR_MESSAGES } from '../constants'
 
 /**
  * OpenAI API を使用するサービス
@@ -46,12 +47,12 @@ export class OpenAIService extends BaseAIService {
   async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
     try {
       if (!this.apiKey) {
-        return this.createErrorResponse('OpenAI APIキーが設定されていません。')
+        return this.createErrorResponse(ERROR_MESSAGES.OPENAI_API_KEY_MISSING)
       }
 
       this.initializeOpenAI()
       if (!this.openai) {
-        return this.createErrorResponse('OpenAI サービスの初期化に失敗しました。')
+        return this.createErrorResponse(ERROR_MESSAGES.OPENAI_INITIALIZATION_FAILED)
       }
 
       const response = await this.openai.chat.completions.create({
@@ -72,11 +73,11 @@ export class OpenAIService extends BaseAIService {
       console.error('OpenAI API エラー:', error)
 
       // エラーの種類に応じてメッセージを変更
-      let errorMessage = 'OpenAI APIでエラーが発生しました。'
+      let errorMessage: string = ERROR_MESSAGES.AI_REQUEST_FAILED
       if (error?.error?.code === 'invalid_api_key') {
-        errorMessage = 'OpenAI APIキーが無効です。'
+        errorMessage = ERROR_MESSAGES.OPENAI_API_KEY_INVALID
       } else if (error?.error?.code === 'insufficient_quota') {
-        errorMessage = 'OpenAI APIの使用量上限に達しています。'
+        errorMessage = ERROR_MESSAGES.OPENAI_QUOTA_EXCEEDED
       }
 
       return this.createErrorResponse(errorMessage)
