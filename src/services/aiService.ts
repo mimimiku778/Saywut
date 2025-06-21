@@ -110,6 +110,11 @@ export const aiService = {
     return service.generateResponse(userInput, correctAnswer)
   },
 
+  async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
+    const service = await getAIService()
+    return service.validateUserInput(userInput, correctAnswer)
+  },
+
   getRandomTopic(): string {
     return getRandomTopic()
   },

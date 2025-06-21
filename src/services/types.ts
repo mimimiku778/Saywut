@@ -13,6 +13,14 @@ export interface IAIService {
   generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse>
 
   /**
+   * ユーザー入力値を検証する
+   * @param userInput ユーザーの入力
+   * @param correctAnswer 正解
+   * @returns 検証結果
+   */
+  validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse>
+
+  /**
    * ランダムなトピックを取得する
    * @returns ランダムなトピック
    */

@@ -1,7 +1,7 @@
 import { AIResponse } from '../types'
 import { IAIService } from './types'
 import { getRandomTopic } from '../data'
-import { createReasoningGamePrompt } from '../prompts'
+import { createReasoningGamePrompt, createInputValidationPrompt } from '../prompts'
 import { ERROR_MESSAGES } from '../constants'
 
 /**
@@ -13,15 +13,27 @@ export abstract class BaseAIService implements IAIService {
   abstract getServiceName(): string
   abstract isAvailable(): Promise<boolean>
 
+  /**
+   * ユーザー入力値を検証する
+   */
+  abstract validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse>
+
   getRandomTopic(): string {
     return getRandomTopic()
   }
 
   /**
-   * AIへのプロンプトを作成する
+   * AIへのプロンプトを作成する（簡素版）
    */
-  protected createPrompt(userInput: string, correctAnswer: string): string {
-    return createReasoningGamePrompt(userInput, correctAnswer)
+  protected createPrompt(userInput: string): string {
+    return createReasoningGamePrompt(userInput)
+  }
+
+  /**
+   * 入力値検証用のプロンプトを作成する
+   */
+  protected createValidationPrompt(userInput: string, correctAnswer: string): string {
+    return createInputValidationPrompt(userInput, correctAnswer)
   }
 
   /**
@@ -31,6 +43,21 @@ export abstract class BaseAIService implements IAIService {
     return {
       response: responseText.trim()
     }
+  }
+
+  /**
+   * 入力値検証結果を解析する
+   */
+  protected parseValidationResponse(responseText: string): { isValid: boolean; reason?: string } {
+    const trimmedResponse = responseText.trim()
+    if (trimmedResponse.startsWith('OK')) {
+      return { isValid: true }
+    } else if (trimmedResponse.startsWith('NG')) {
+      const reason = trimmedResponse.replace(/^NG[：:]?\s*/, '')
+      return { isValid: false, reason: reason || '入力内容がルールに適合していません。' }
+    }
+    // 判定が不明な場合はNGとして扱う
+    return { isValid: false, reason: '入力内容の判定ができませんでした。' }
   }
 
   /**

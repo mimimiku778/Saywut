@@ -1,6 +1,5 @@
 import { AIResponse } from '../types'
 import { BaseAIService } from './baseAIService'
-import { createChromeAISystemPrompt } from '../prompts'
 import { ERROR_MESSAGES } from '../constants'
 
 /**
@@ -49,7 +48,7 @@ export class ChromeAIService extends BaseAIService {
         initialPrompts: [
           {
             role: 'system',
-            content: createChromeAISystemPrompt(''),
+            content: 'あなたは推理ゲームのプレイヤーです。ユーザーの説明から何を指しているかを推測したり、入力の妥当性を判定したりします。',
           },
         ],
         temperature: 0.7,
@@ -74,7 +73,7 @@ export class ChromeAIService extends BaseAIService {
         return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_UNAVAILABLE)
       }
 
-      const prompt = this.createPrompt(userInput, correctAnswer)
+      const prompt = this.createPrompt(userInput)
 
       // 新しい仕様では単純にpromptメソッドを使用
       const responseText = await this.model.prompt(prompt)
@@ -82,6 +81,24 @@ export class ChromeAIService extends BaseAIService {
       return this.parseAIResponse(responseText)
     } catch (error) {
       console.error('Chrome AI エラー:', error)
+      return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_ERROR)
+    }
+  }
+
+  async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
+    try {
+      // モデルの初期化を確認
+      const initialized = await this.initializeModel()
+      if (!initialized) {
+        return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_UNAVAILABLE)
+      }
+
+      const validationPrompt = this.createValidationPrompt(userInput, correctAnswer)
+      const responseText = await this.model.prompt(validationPrompt)
+
+      return this.parseAIResponse(responseText)
+    } catch (error) {
+      console.error('Chrome AI 入力値検証エラー:', error)
       return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_ERROR)
     }
   }

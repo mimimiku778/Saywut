@@ -40,6 +40,50 @@ export const useGameState = () => {
     setGameState((prev) => ({ ...prev, isLoading: true }))
 
     try {
+      // 第1段階: ユーザー入力値の検証
+      const validationResponse = await aiService.validateUserInput(gameState.userInput, gameState.currentTopic)
+      
+      // 検証エラーの場合
+      if (validationResponse.response.includes('エラー')) {
+        setGameState((prev) => ({
+          ...prev,
+          aiResponse: validationResponse.response,
+          isLoading: false,
+          isCorrect: false,
+          totalQuestions: prev.totalQuestions + 1,
+        }))
+        return
+      }
+
+      // 検証結果をパース
+      const validationText = validationResponse.response.trim()
+      let isInputValid = false
+      let validationReason = ''
+
+      if (validationText.startsWith('OK')) {
+        isInputValid = true
+      } else if (validationText.startsWith('NG')) {
+        isInputValid = false
+        validationReason = validationText.replace(/^NG[：:]?\s*/, '') || '入力内容がルールに適合していません。'
+      } else {
+        // 判定が不明な場合はNGとして扱う
+        isInputValid = false
+        validationReason = '入力内容の判定ができませんでした。'
+      }
+
+      // 入力値検証で不合格の場合
+      if (!isInputValid) {
+        setGameState((prev) => ({
+          ...prev,
+          aiResponse: `ルール違反: ${validationReason}`,
+          isLoading: false,
+          isCorrect: false,
+          totalQuestions: prev.totalQuestions + 1,
+        }))
+        return
+      }
+
+      // 第2段階: AIによる推理
       const response = await aiService.generateResponse(gameState.userInput, gameState.currentTopic)
 
       // AIのレスポンスに正解の単語が含まれているかで判定

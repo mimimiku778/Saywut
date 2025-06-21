@@ -60,7 +60,7 @@ export class OpenAIService extends BaseAIService {
         messages: [
           {
             role: 'user',
-            content: this.createPrompt(userInput, correctAnswer),
+            content: this.createPrompt(userInput),
           },
         ],
         temperature: 0.7,
@@ -73,6 +73,45 @@ export class OpenAIService extends BaseAIService {
       console.error('OpenAI API エラー:', error)
 
       // エラーの種類に応じてメッセージを変更
+      let errorMessage: string = ERROR_MESSAGES.AI_REQUEST_FAILED
+      if (error?.error?.code === 'invalid_api_key') {
+        errorMessage = ERROR_MESSAGES.OPENAI_API_KEY_INVALID
+      } else if (error?.error?.code === 'insufficient_quota') {
+        errorMessage = ERROR_MESSAGES.OPENAI_QUOTA_EXCEEDED
+      }
+
+      return this.createErrorResponse(errorMessage)
+    }
+  }
+
+  async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
+    try {
+      if (!this.apiKey) {
+        return this.createErrorResponse(ERROR_MESSAGES.OPENAI_API_KEY_MISSING)
+      }
+
+      this.initializeOpenAI()
+      if (!this.openai) {
+        return this.createErrorResponse(ERROR_MESSAGES.OPENAI_INITIALIZATION_FAILED)
+      }
+
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4-1106-preview',
+        messages: [
+          {
+            role: 'user',
+            content: this.createValidationPrompt(userInput, correctAnswer),
+          },
+        ],
+        temperature: 0.3,
+        max_tokens: 200,
+      })
+
+      const responseText = response.choices[0]?.message?.content || ''
+      return this.parseAIResponse(responseText)
+    } catch (error: any) {
+      console.error('OpenAI API 入力値検証エラー:', error)
+
       let errorMessage: string = ERROR_MESSAGES.AI_REQUEST_FAILED
       if (error?.error?.code === 'invalid_api_key') {
         errorMessage = ERROR_MESSAGES.OPENAI_API_KEY_INVALID
