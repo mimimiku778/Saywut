@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { AIServiceType } from '../services/types'
-import { AIServiceManager } from '../services/aiService'
+import { aiService, getAvailableServices, createAIService } from '../services/aiService'
 
 interface AIServiceSelectorProps {
   onServiceChange?: (serviceType: AIServiceType) => void
@@ -26,9 +26,10 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
   const loadAvailableServices = async () => {
     try {
       setIsLoading(true)
-      const services = await AIServiceManager.getAvailableServices()
+      const services = await getAvailableServices()
       setAvailableServices(services)
-      setCurrentService(AIServiceManager.getCurrentServiceType())
+      // 現在のサービスは管理しない（常に最適なサービスを自動選択）
+      setCurrentService(null)
     } catch (error) {
       console.error('利用可能なサービスの取得に失敗:', error)
     } finally {
@@ -38,9 +39,17 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
 
   const handleServiceSwitch = async (serviceType: AIServiceType) => {
     try {
-      await AIServiceManager.switchToService(serviceType)
-      setCurrentService(serviceType)
-      onServiceChange?.(serviceType)
+      // サービスの可用性をテスト
+      const service = createAIService(serviceType)
+      const isAvailable = await service.isAvailable()
+      
+      if (isAvailable) {
+        setCurrentService(serviceType)
+        onServiceChange?.(serviceType)
+        console.log(`${service.getServiceName()}が選択されました`)
+      } else {
+        throw new Error(`${serviceType}は利用できません`)
+      }
     } catch (error) {
       console.error('サービスの切り替えに失敗:', error)
       // OpenAI APIキーが必要な場合
@@ -52,7 +61,7 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
 
   const handleApiKeySubmit = async () => {
     if (apiKey.trim()) {
-      AIServiceManager.setOpenAIApiKey(apiKey.trim())
+      aiService.setOpenAIApiKey(apiKey.trim())
       setShowApiKeyInput(false)
       setApiKey('')
       // サービスリストを再読み込み

@@ -105,8 +105,7 @@ src/
 │   ├── baseAIService.ts # 基底クラス
 │   ├── chromeAIService.ts # Chrome AI実装
 │   ├── openAIService.ts # OpenAI API実装
-│   ├── aiServiceFactory.ts # ファクトリー
-│   └── aiService.ts     # メインサービス管理
+│   └── aiService.ts     # シンプルなファクトリー関数群
 ├── types/
 │   └── index.ts         # 型定義
 ├── App.tsx              # メインアプリ
@@ -117,7 +116,7 @@ src/
 ## ✨ 実装済み機能
 
 - ✅ レスポンシブなApple風UI
-- ✅ **完全分離されたAIサービス設計**
+- ✅ **シンプルなAIサービス設計（毎回新しいインスタンス作成）**
 - ✅ **リアルタイムAIサービス切り替え**
 - ✅ **Chrome Built-in AI (Gemini Nano) サポート**
 - ✅ **OpenAI API (GPT-4) サポート**

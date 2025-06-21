@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { GameState } from '../types'
-import { AIServiceManager, aiService } from '../services/aiService'
+import { aiService } from '../services/aiService'
 import { getRandomTopic } from '../data'
 
 export const useGameState = () => {
@@ -14,19 +14,18 @@ export const useGameState = () => {
     totalQuestions: 0,
   })
 
-  // AIサービスの初期化
+  // ゲームの初期化
   useEffect(() => {
     const initializeGame = async () => {
       try {
-        await AIServiceManager.initialize()
         const initialTopic = getRandomTopic()
         setGameState((prev) => ({ ...prev, currentTopic: initialTopic }))
       } catch (error) {
-        console.error('AIサービスの初期化に失敗しました:', error)
+        console.error('ゲームの初期化に失敗しました:', error)
         setGameState((prev) => ({
           ...prev,
           currentTopic: '猫', // フォールバック
-          aiResponse: 'AIサービスの初期化に失敗しました。基本機能のみ利用できます。',
+          aiResponse: 'ゲームの初期化に失敗しました。基本機能のみ利用できます。',
         }))
       }
     }

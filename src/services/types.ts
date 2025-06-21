@@ -43,12 +43,3 @@ export interface IAIService {
  * AIサービスの種類
  */
 export type AIServiceType = 'chrome-ai' | 'openai'
-
-/**
- * AIサービスの設定
- */
-export interface AIServiceConfig {
-  defaultService: AIServiceType
-  openaiApiKey?: string
-  enableChromeAI: boolean
-}
