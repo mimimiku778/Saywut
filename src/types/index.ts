@@ -15,9 +15,7 @@ export interface QuizTopic {
 }
 
 export interface AIResponse {
-  guess: string
-  reasoning: string
-  confidence: number
+  response: string
 }
 
 // Chrome Built-in AI API の型定義（2025年版）

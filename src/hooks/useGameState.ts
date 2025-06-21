@@ -42,12 +42,13 @@ export const useGameState = () => {
     try {
       const response = await aiService.generateResponse(gameState.userInput, gameState.currentTopic)
 
-      const isCorrect = response.guess === gameState.currentTopic
+      // AIのレスポンスに正解の単語が含まれているかで判定
+      const isCorrect = response.response.includes(gameState.currentTopic)
       const newScore = isCorrect ? gameState.score + 1 : gameState.score
 
       setGameState((prev) => ({
         ...prev,
-        aiResponse: `AIの推測: "${response.guess}"\n理由: ${response.reasoning}\n確信度: ${Math.round(response.confidence * 100)}%`,
+        aiResponse: response.response,
         isLoading: false,
         isCorrect,
         score: newScore,
