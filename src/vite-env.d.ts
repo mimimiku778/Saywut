@@ -38,7 +38,9 @@ interface LanguageModelSession {
 declare global {
   class LanguageModel {
     static create(options?: LanguageModelCreateOptions): Promise<LanguageModelSession>
-    static availability(options?: LanguageModelCreateOptions): Promise<'unavailable' | 'downloadable' | 'downloading' | 'available'>
+    static availability(
+      options?: LanguageModelCreateOptions
+    ): Promise<'unavailable' | 'downloadable' | 'downloading' | 'available'>
     static params(): Promise<LanguageModelCapabilities | null>
   }
 

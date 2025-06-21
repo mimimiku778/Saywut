@@ -28,7 +28,7 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
       setIsLoading(true)
       const services = await getAvailableServices()
       setAvailableServices(services)
-      
+
       // 最初に利用可能なサービスを選択
       if (services.length > 0 && !currentService) {
         const firstService = services[0]
@@ -47,7 +47,7 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
       // サービスの可用性をテスト
       const service = createAIService(serviceType)
       const isAvailable = await service.isAvailable()
-      
+
       if (isAvailable) {
         setCurrentService(serviceType)
         aiService.setServiceType(serviceType)

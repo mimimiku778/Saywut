@@ -40,8 +40,11 @@ export const useGameState = () => {
 
     try {
       // 第1段階: ユーザー入力値の検証
-      const validationResponse = await aiService.validateUserInput(gameState.userInput, gameState.currentTopic)
-      
+      const validationResponse = await aiService.validateUserInput(
+        gameState.userInput,
+        gameState.currentTopic
+      )
+
       // 検証エラーの場合
       if (validationResponse.response.includes('エラー')) {
         setGameState((prev) => ({
@@ -64,7 +67,8 @@ export const useGameState = () => {
         isInputValid = true
       } else if (validationText.includes('NG')) {
         isInputValid = false
-        validationReason = validationText.replace(/^NG[：:]?\s*/, '') || '入力内容がルールに適合していません。'
+        validationReason =
+          validationText.replace(/^NG[：:]?\s*/, '') || '入力内容がルールに適合していません。'
       } else {
         // 判定が不明な場合はNGとして扱う
         isInputValid = false
