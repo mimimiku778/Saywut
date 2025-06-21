@@ -5,17 +5,32 @@ AIに言葉を当てさせるシンプルなクイズゲーム - React(Typescrip
 ## ✨ 特徴
 
 - **シンプルな操作**: お題の言葉を使わずに特徴を説明するだけ
-- **インテリジェントAI**: 高度なパターンマッチングでAIが推測
+- **デュアルAIサポート**: OpenAI API と Chrome Built-in AI (Gemini Nano) の両方に対応
+- **自動フォールバック**: Chrome AIが利用できない場合は自動的にOpenAI APIに切り替え
 - **レスポンシブデザイン**: PC・スマホ両対応
 - **Apple風UI**: 美しく直感的なデザイン
 - **リアルタイム分析**: AIが理由付きで回答
+
+## 🤖 AIエンジン
+
+### Chrome Built-in AI (Gemini Nano) 
+- ローカル環境での推奨オプション
+- インターネット接続不要
+- プライバシー保護
+- 高速応答
+
+### OpenAI API (GPT-4)
+- 本番環境での推奨オプション  
+- 高精度な推論
+- 豊富な知識ベース
+- APIキーが必要
 
 ## 🎮 遊び方
 
 1. **お題を確認**: 画面に表示されたお題の言葉を確認
 2. **特徴を説明**: お題の言葉を使わずに特徴を入力
-3. **AIが推測**: AIがただユーザーに入力された内容に対する出力をする
-4. **結果を確認**: AIの出力文字列にお題の単語が含まれれば正解
+3. **AIが推測**: AIがユーザーの説明から答えを推測
+4. **結果を確認**: AIの推測が正解かどうかを確認
 
 ### 例
 - **お題**: 桜
@@ -27,10 +42,26 @@ AIに言葉を当てさせるシンプルなクイズゲーム - React(Typescrip
 - **フロントエンド**: React 18 + TypeScript
 - **ビルドツール**: Vite
 - **スタイリング**: Tailwind CSS
-- **AIエンジン**: モックAIサービス（パターンマッチング）
+- **AIエンジン**: OpenAI API + Chrome Built-in AI
 - **言語**: TypeScript
 
 ## 🚀 セットアップ
+
+### 環境設定
+
+1. `.env`ファイルを作成:
+```bash
+# OpenAI API設定
+VITE_OPENAI_API_KEY=your_openai_api_key_here
+VITE_USE_CHROME_AI=true
+```
+
+2. Chrome Built-in AIを使用する場合:
+   - Chrome Canary または Dev版を使用
+   - `chrome://flags/#prompt-api-for-gemini-nano` を有効化
+   - `chrome://flags/#optimization-guide-on-device-model` を有効化
+
+### インストールと起動
 
 ```bash
 # 依存関係のインストール

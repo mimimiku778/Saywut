@@ -1,205 +1,236 @@
+import OpenAI from 'openai'
 import { AIResponse } from '../types'
 
-// モックAIサービス - 実際のLLMの代わりにパターンマッチングを使用
-export class MockAIService {
-  private topics = [
-    {
-      word: '桜',
-      keywords: ['春', 'ピンク', '花', '日本', '咲く', '美しい', '木', '葉', '散る', '満開'],
-    },
-    {
-      word: 'ラーメン',
-      keywords: [
-        '麺',
-        'スープ',
-        '温かい',
-        '食べ物',
-        '箸',
-        '中華',
-        'チャーシュー',
-        '味噌',
-        '醤油',
-        '豚骨',
-      ],
-    },
-    {
-      word: '富士山',
-      keywords: ['山', '高い', '日本', '雪', '美しい', '静岡', '山梨', '登山', '3776', '世界遺産'],
-    },
-    {
-      word: '電車',
-      keywords: [
-        '乗り物',
-        '線路',
-        '駅',
-        '運転手',
-        '切符',
-        '通勤',
-        '交通',
-        'レール',
-        'ホーム',
-        '車両',
-      ],
-    },
-    {
-      word: '猫',
-      keywords: ['動物', '毛', 'にゃー', 'ペット', '可愛い', '爪', 'ひげ', '尻尾', '肉球', '鳴く'],
-    },
-    {
-      word: 'スマートフォン',
-      keywords: [
-        '電話',
-        '画面',
-        'アプリ',
-        '携帯',
-        'タッチ',
-        'インターネット',
-        'カメラ',
-        'バッテリー',
-        'iOS',
-        'Android',
-      ],
-    },
-    {
-      word: '寿司',
-      keywords: ['魚', '米', '生', '日本料理', 'わさび', '醤油', '握り', 'ネタ', 'シャリ', '回転'],
-    },
-    {
-      word: '本',
-      keywords: ['読む', 'ページ', '文字', '知識', '図書館', '作家', '物語', '紙', '活字', '小説'],
-    },
-    {
-      word: 'コーヒー',
-      keywords: [
-        '飲み物',
-        '黒い',
-        '苦い',
-        'カフェイン',
-        '豆',
-        '朝',
-        '目覚め',
-        'カップ',
-        'エスプレッソ',
-        'ラテ',
-      ],
-    },
-    {
-      word: '雨',
-      keywords: ['水', '空', '雲', '濡れる', '傘', '梅雨', '天気', '音', 'しずく', '降る'],
-    },
-    {
-      word: 'ピアノ',
-      keywords: [
-        '楽器',
-        '鍵盤',
-        '音楽',
-        '白',
-        '黒',
-        '弾く',
-        'クラシック',
-        '指',
-        '練習',
-        'メロディー',
-      ],
-    },
-    {
-      word: '海',
-      keywords: ['水', '塩', '青い', '波', '魚', '泳ぐ', '砂浜', '深い', '広い', '潮'],
-    },
+// 基本的なAIサービスの抽象クラス
+abstract class BaseAIService {
+  protected topics = [
+    '桜', 'ラーメン', '富士山', '電車', '猫', 'スマートフォン', '寿司', '本', 
+    'コーヒー', '雨', 'ピアノ', '海', '花火', '雪', '太陽', '月', '星', 
+    '風', '虹', '蝶', '鳥', '犬', '魚', '花', '木', '川', '山', '森', '空'
   ]
 
-  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
-    // 実際のAPIコールをシミュレート
-    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000))
-
-    const input = userInput.toLowerCase()
-
-    // 正解の単語を直接含んでいる場合は失格
-    if (input.includes(correctAnswer.toLowerCase())) {
-      return {
-        guess: correctAnswer,
-        reasoning: `入力に「${correctAnswer}」という言葉が含まれているため、ルール違反です。`,
-        confidence: 1.0,
-      }
-    }
-
-    // 対応するトピックを検索
-    const topic = this.topics.find((t) => t.word === correctAnswer)
-
-    if (topic) {
-      const matchedKeywords = topic.keywords.filter((keyword) =>
-        input.includes(keyword.toLowerCase())
-      )
-
-      // 強いマッチ（複数キーワード + 高い確率）
-      if (matchedKeywords.length >= 3) {
-        return {
-          guess: correctAnswer,
-          reasoning: `「${matchedKeywords.slice(0, 3).join('」「')}」などの複数のキーワードから明確に推測できました。`,
-          confidence: Math.min(0.95, 0.7 + matchedKeywords.length * 0.1),
-        }
-      }
-      // 中程度のマッチ（2つのキーワード）
-      else if (matchedKeywords.length === 2) {
-        return {
-          guess: correctAnswer,
-          reasoning: `「${matchedKeywords.join('」「')}」という重要なヒントから推測しました。`,
-          confidence: 0.7 + Math.random() * 0.2,
-        }
-      }
-      // 弱いマッチ（1つのキーワード）
-      else if (matchedKeywords.length === 1) {
-        // 70%の確率で正解
-        if (Math.random() > 0.3) {
-          return {
-            guess: correctAnswer,
-            reasoning: `「${matchedKeywords[0]}」というヒントから推測しましたが、やや不確実です。`,
-            confidence: 0.4 + Math.random() * 0.3,
-          }
-        }
-      }
-
-      // 部分的な文字列マッチもチェック
-      const partialMatches = topic.keywords.filter(
-        (keyword) =>
-          keyword
-            .toLowerCase()
-            .split('')
-            .some((char) => input.includes(char)) ||
-          input.split('').some((char) => keyword.toLowerCase().includes(char))
-      )
-
-      if (partialMatches.length >= 3 && Math.random() > 0.6) {
-        return {
-          guess: correctAnswer,
-          reasoning: `説明の内容から推測しました。関連性のあるヒントが含まれていたようです。`,
-          confidence: 0.3 + Math.random() * 0.3,
-        }
-      }
-    }
-
-    // ランダムな不正解を生成
-    const randomTopics = this.topics.filter((t) => t.word !== correctAnswer)
-    const randomGuess = randomTopics[Math.floor(Math.random() * randomTopics.length)]
-
-    const uncertainReasons = [
-      'ヒントから推測しましたが、確信が持てません。',
-      '説明から連想しましたが、別の可能性もありそうです。',
-      'いくつかの要素から推測しましたが、曖昧な部分があります。',
-      '与えられた情報では判断が難しく、推測に頼っています。',
-      '関連しそうなキーワードから推測しましたが、自信がありません。',
-    ]
-
-    return {
-      guess: randomGuess.word,
-      reasoning: uncertainReasons[Math.floor(Math.random() * uncertainReasons.length)],
-      confidence: 0.2 + Math.random() * 0.4,
-    }
-  }
+  abstract generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse>
 
   getRandomTopic(): string {
-    return this.topics[Math.floor(Math.random() * this.topics.length)].word
+    return this.topics[Math.floor(Math.random() * this.topics.length)]
+  }
+
+  protected createPrompt(userInput: string, correctAnswer: string): string {
+    return `あなたは推理ゲームのプレイヤーです。ユーザーが何かを説明しており、それが何を指しているかを推測する必要があります。
+
+ルール:
+1. ユーザーの説明から推測される単語を1つ答えてください
+2. 推測の根拠を簡潔に説明してください
+3. 確信度を0.0〜1.0で評価してください
+4. 正解の単語「${correctAnswer}」が説明に直接含まれている場合は、ルール違反として指摘してください
+
+ユーザーの説明: "${userInput}"
+
+以下のJSON形式で回答してください:
+{
+  "guess": "推測した単語",
+  "reasoning": "推測の根拠",
+  "confidence": 確信度（0.0〜1.0の数値）
+}`
+  }
+
+  protected parseAIResponse(responseText: string): AIResponse {
+    try {
+      // JSONレスポンスの抽出を試行
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0])
+        return {
+          guess: parsed.guess || '不明',
+          reasoning: parsed.reasoning || '判断できませんでした。',
+          confidence: Math.max(0, Math.min(1, parsed.confidence || 0.5))
+        }
+      }
+      
+      // JSONが見つからない場合のフォールバック
+      return {
+        guess: this.topics[Math.floor(Math.random() * this.topics.length)],
+        reasoning: 'AIの応答を解析できませんでした。',
+        confidence: 0.3
+      }
+    } catch (error) {
+      console.error('AIレスポンス解析エラー:', error)
+      return {
+        guess: this.topics[Math.floor(Math.random() * this.topics.length)],
+        reasoning: 'AIの応答を解析できませんでした。',
+        confidence: 0.3
+      }
+    }
   }
 }
 
-export const aiService = new MockAIService()
+// OpenAI APIを使用するサービス
+class OpenAIService extends BaseAIService {
+  private openai: OpenAI
+  
+  constructor() {
+    super()
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY
+    if (!apiKey) {
+      throw new Error('OpenAI APIキーが設定されていません。.envファイルでVITE_OPENAI_API_KEYを設定してください。')
+    }
+    
+    this.openai = new OpenAI({
+      apiKey,
+      dangerouslyAllowBrowser: true // ブラウザでの使用を許可（本番環境では推奨されません）
+    })
+  }
+
+  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4-1106-preview', // GPT-4 Turboを使用（gpt-4.1 nanoが利用可能でない場合）
+        messages: [
+          {
+            role: 'user',
+            content: this.createPrompt(userInput, correctAnswer)
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 500
+      })
+
+      const responseText = response.choices[0]?.message?.content || ''
+      return this.parseAIResponse(responseText)
+    } catch (error) {
+      console.error('OpenAI API エラー:', error)
+      return {
+        guess: this.topics[Math.floor(Math.random() * this.topics.length)],
+        reasoning: 'APIエラーが発生しました。',
+        confidence: 0.3
+      }
+    }
+  }
+}
+
+// Chrome Built-in AI (Gemini Nano)を使用するサービス
+class ChromeAIService extends BaseAIService {
+  private model: any = null
+
+  async initializeModel(): Promise<boolean> {
+    try {
+      // Chrome Built-in AI API の最新構文（2025年対応）
+      if (!window.ai?.languageModel) {
+        return false
+      }
+
+      const capabilities = await window.ai.languageModel.capabilities()
+      if (capabilities.available !== 'readily' && capabilities.available !== 'after-download') {
+        return false
+      }
+
+      // 最新のAPI構文を使用
+      this.model = await window.ai.languageModel.create({
+        systemPrompt: 'あなたは推理ゲームのプレイヤーです。ユーザーの説明から何を指しているかを推測してください。JSON形式で回答し、guess（推測）、reasoning（理由）、confidence（確信度0-1）を含めてください。',
+        temperature: 0.7,
+        topK: 3
+      })
+
+      return true
+    } catch (error) {
+      console.error('Chrome AI初期化エラー:', error)
+      return false
+    }
+  }
+
+  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
+    try {
+      if (!this.model) {
+        const initialized = await this.initializeModel()
+        if (!initialized) {
+          throw new Error('Chrome AI が利用できません')
+        }
+      }
+
+      const prompt = this.createPrompt(userInput, correctAnswer)
+      
+      // ストリーミング機能がある場合は使用、なければ通常のpromptを使用
+      let responseText = ''
+      if (this.model.promptStreaming) {
+        const stream = this.model.promptStreaming(prompt)
+        for await (const chunk of stream) {
+          responseText += chunk
+        }
+      } else {
+        responseText = await this.model.prompt(prompt)
+      }
+      
+      return this.parseAIResponse(responseText)
+    } catch (error) {
+      console.error('Chrome AI エラー:', error)
+      return {
+        guess: this.topics[Math.floor(Math.random() * this.topics.length)],
+        reasoning: 'Chrome AIでエラーが発生しました。',
+        confidence: 0.3
+      }
+    }
+  }
+}
+
+// AIサービスファクトリー
+class AIServiceFactory {
+  private static instance: BaseAIService | null = null
+
+  static async createService(): Promise<BaseAIService> {
+    if (this.instance) {
+      return this.instance
+    }
+
+    // 環境変数でChrome AIの使用が指定されている場合
+    const useChromeAI = import.meta.env.VITE_USE_CHROME_AI === 'true'
+    
+    if (useChromeAI) {
+      const chromeService = new ChromeAIService()
+      const isAvailable = await chromeService.initializeModel()
+      
+      if (isAvailable) {
+        console.log('Chrome Built-in AI (Gemini Nano) を使用します')
+        this.instance = chromeService
+        return this.instance
+      } else {
+        console.log('Chrome AIが利用できません。OpenAI APIにフォールバックします。')
+      }
+    }
+
+    // OpenAI APIを使用
+    try {
+      console.log('OpenAI API を使用します')
+      this.instance = new OpenAIService()
+      return this.instance
+    } catch (error) {
+      console.error('AIサービスの初期化に失敗しました:', error)
+      throw error
+    }
+  }
+
+  static resetInstance(): void {
+    this.instance = null
+  }
+}
+
+// サービスのインスタンスを作成してエクスポート
+let aiServiceInstance: BaseAIService | null = null
+
+export const getAIService = async (): Promise<BaseAIService> => {
+  if (!aiServiceInstance) {
+    aiServiceInstance = await AIServiceFactory.createService()
+  }
+  return aiServiceInstance
+}
+
+// 後方互換性のための直接エクスポート（非推奨）
+export const aiService = {
+  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
+    const service = await getAIService()
+    return service.generateResponse(userInput, correctAnswer)
+  },
+  
+  getRandomTopic(): string {
+    return new ChromeAIService().getRandomTopic()
+  }
+}
