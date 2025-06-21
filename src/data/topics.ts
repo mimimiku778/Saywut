@@ -72,7 +72,15 @@ export const QUIZ_TOPICS = [...NORMAL_TOPICS, ...HARD_TOPICS] as const
 export type DifficultyLevel = 'normal' | 'hard'
 
 /**
- * 指定した難易度のランダムなトピックを取得する
+ * 指定した難易度のトピックを順番に取得する
+ */
+export function getTopicByIndex(difficulty: DifficultyLevel = 'normal', index: number): string {
+  const topics = getTopicsByDifficulty(difficulty)
+  return topics[index % topics.length]
+}
+
+/**
+ * 指定した難易度のランダムなトピックを取得する（レガシー関数）
  */
 export function getRandomTopic(difficulty: DifficultyLevel = 'normal'): string {
   const topics = getTopicsByDifficulty(difficulty)

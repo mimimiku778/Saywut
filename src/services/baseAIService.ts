@@ -1,6 +1,6 @@
 import { AIResponse } from '../types/gameTypes'
 import { IAIService } from './types'
-import { getRandomTopic, type DifficultyLevel } from '../data/topics'
+import { getTopicByIndex, type DifficultyLevel } from '../data/topics'
 import { createReasoningGamePrompt, createInputValidationPrompt } from '../prompts/gamePrompts'
 import { ERROR_MESSAGES } from '../constants/gameConstants'
 
@@ -18,7 +18,7 @@ export abstract class BaseAIService implements IAIService {
   abstract validateUserInput(userInput: string, correctAnswer: string, difficulty?: DifficultyLevel): Promise<AIResponse>
 
   getRandomTopic(): string {
-    return getRandomTopic()
+    return getTopicByIndex('normal', 0)
   }
 
   /**

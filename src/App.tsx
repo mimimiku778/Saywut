@@ -2,7 +2,6 @@ import { Header } from './components/Header'
 import { GameBoard } from './components/GameBoard'
 import { ResultDisplay } from './components/ResultDisplay'
 import { GameRules } from './components/GameRules'
-import { AIServiceSelector } from './components/AIServiceSelector'
 import { DifficultySelector } from './components/DifficultySelector'
 import { useGameState } from './hooks/useGameState'
 
@@ -15,10 +14,7 @@ function App() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* 設定エリア */}
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
-            <AIServiceSelector />
-          </div>
+        <div className="mb-6 flex justify-center">
           <DifficultySelector 
             currentDifficulty={gameState.difficulty}
             onDifficultyChange={changeDifficulty}

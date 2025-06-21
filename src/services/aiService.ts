@@ -1,8 +1,7 @@
 import { AIResponse } from '../types/gameTypes'
 import { IAIService, AIServiceType } from './types'
-import { ChromeAIService } from './chromeAIService'
 import { OpenAIService } from './openAIService'
-import { getRandomTopic, type DifficultyLevel } from '../data/topics'
+import { getTopicByIndex, type DifficultyLevel } from '../data/topics'
 
 /**
  * AIサービスの設定
@@ -25,8 +24,6 @@ export function updateConfig(newConfig: Partial<AIServiceConfig>): void {
  */
 export function createAIService(type: AIServiceType): IAIService {
   switch (type) {
-    case 'chrome-ai':
-      return new ChromeAIService()
     case 'openai':
       return new OpenAIService(config.openaiApiKey)
     default:
@@ -60,7 +57,7 @@ export async function createSelectedService(): Promise<IAIService> {
  */
 export async function getAvailableServices(): Promise<{ type: AIServiceType; name: string }[]> {
   const available: { type: AIServiceType; name: string }[] = []
-  const serviceTypes: AIServiceType[] = ['openai', 'chrome-ai']
+  const serviceTypes: AIServiceType[] = ['openai']
 
   for (const type of serviceTypes) {
     try {
@@ -92,8 +89,8 @@ export const aiService = {
     setServiceType(type)
   },
 
-  getRandomTopic(difficulty: DifficultyLevel = 'normal'): string {
-    return getRandomTopic(difficulty)
+  getTopicByIndex(difficulty: DifficultyLevel = 'normal', index: number): string {
+    return getTopicByIndex(difficulty, index)
   },
 
   setOpenAIApiKey(apiKey: string): void {

@@ -45,4 +45,4 @@ export interface IAIService {
 /**
  * AIサービスの種類
  */
-export type AIServiceType = 'chrome-ai' | 'openai'
+export type AIServiceType = 'openai'

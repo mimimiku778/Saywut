@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { GameState } from '../types/gameTypes'
 import { aiService } from '../services/aiService'
-import { getRandomTopic, type DifficultyLevel } from '../data/topics'
+import { getTopicByIndex, type DifficultyLevel } from '../data/topics'
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -14,13 +14,15 @@ export const useGameState = () => {
     totalQuestions: 0,
     difficulty: 'normal',
   })
+  const [currentTopicIndex, setCurrentTopicIndex] = useState(0)
 
   // ゲームの初期化
   useEffect(() => {
     const initializeGame = async () => {
       try {
-        const initialTopic = getRandomTopic(gameState.difficulty)
+        const initialTopic = getTopicByIndex(gameState.difficulty, 0)
         setGameState((prev) => ({ ...prev, currentTopic: initialTopic }))
+        setCurrentTopicIndex(0)
       } catch (error) {
         console.error('ゲームの初期化に失敗しました:', error)
         setGameState((prev) => ({
@@ -28,6 +30,7 @@ export const useGameState = () => {
           currentTopic: '猫', // フォールバック
           aiResponse: 'ゲームの初期化に失敗しました。基本機能のみ利用できます。',
         }))
+        setCurrentTopicIndex(0)
       }
     }
 
@@ -118,7 +121,8 @@ export const useGameState = () => {
 
   const nextQuestion = useCallback(async () => {
     try {
-      const newTopic = getRandomTopic(gameState.difficulty)
+      const nextIndex = currentTopicIndex + 1
+      const newTopic = getTopicByIndex(gameState.difficulty, nextIndex)
       setGameState((prev) => ({
         ...prev,
         currentTopic: newTopic,
@@ -126,14 +130,15 @@ export const useGameState = () => {
         aiResponse: '',
         isCorrect: null,
       }))
+      setCurrentTopicIndex(nextIndex)
     } catch (error) {
       console.error('次の問題の生成に失敗しました:', error)
     }
-  }, [gameState.difficulty])
+  }, [gameState.difficulty, currentTopicIndex])
 
   const resetGame = useCallback(async () => {
     try {
-      const newTopic = getRandomTopic(gameState.difficulty)
+      const newTopic = getTopicByIndex(gameState.difficulty, 0)
       setGameState({
         currentTopic: newTopic,
         userInput: '',
@@ -144,6 +149,7 @@ export const useGameState = () => {
         totalQuestions: 0,
         difficulty: gameState.difficulty,
       })
+      setCurrentTopicIndex(0)
     } catch (error) {
       console.error('ゲームのリセットに失敗しました:', error)
       setGameState({
@@ -156,6 +162,7 @@ export const useGameState = () => {
         totalQuestions: 0,
         difficulty: gameState.difficulty,
       })
+      setCurrentTopicIndex(0)
     }
   }, [gameState.difficulty])
 
@@ -165,7 +172,7 @@ export const useGameState = () => {
 
   const changeDifficulty = useCallback(async (newDifficulty: DifficultyLevel) => {
     try {
-      const newTopic = getRandomTopic(newDifficulty)
+      const newTopic = getTopicByIndex(newDifficulty, 0)
       setGameState((prev) => ({
         ...prev,
         difficulty: newDifficulty,
@@ -174,6 +181,7 @@ export const useGameState = () => {
         aiResponse: '',
         isCorrect: null,
       }))
+      setCurrentTopicIndex(0)
     } catch (error) {
       console.error('難易度変更に失敗しました:', error)
     }
