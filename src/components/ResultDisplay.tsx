@@ -15,7 +15,6 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
 }) => {
   if (!aiResponse) return null
 
-  const resultColor = isCorrect === true ? 'green' : isCorrect === false ? 'red' : 'gray'
   const resultIcon = isCorrect === true ? '🎉' : isCorrect === false ? '😔' : '🤖'
   const resultText = isCorrect === true ? '正解！' : isCorrect === false ? '不正解' : '結果'
 

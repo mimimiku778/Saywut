@@ -1,8 +1,8 @@
-import React from 'react'
 import { Header } from './components/Header'
 import { GameBoard } from './components/GameBoard'
 import { ResultDisplay } from './components/ResultDisplay'
 import { GameRules } from './components/GameRules'
+import { AIServiceSelector } from './components/AIServiceSelector'
 import { useGameState } from './hooks/useGameState'
 
 function App() {
@@ -13,6 +13,13 @@ function App() {
       <Header score={gameState.score} totalQuestions={gameState.totalQuestions} />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
+        {/* AIサービス選択 */}
+        <div className="mb-6">
+          <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
+            <AIServiceSelector />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* メインゲームエリア */}
           <div className="lg:col-span-2 space-y-6">

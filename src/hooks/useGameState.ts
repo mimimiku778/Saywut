@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { GameState } from '../types'
-import { getAIService } from '../services/aiService'
+import { AIServiceManager, aiService } from '../services/aiService'
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -17,19 +17,19 @@ export const useGameState = () => {
   useEffect(() => {
     const initializeGame = async () => {
       try {
-        const service = await getAIService()
-        const initialTopic = service.getRandomTopic()
-        setGameState(prev => ({ ...prev, currentTopic: initialTopic }))
+        await AIServiceManager.initialize()
+        const initialTopic = aiService.getRandomTopic()
+        setGameState((prev) => ({ ...prev, currentTopic: initialTopic }))
       } catch (error) {
         console.error('AIサービスの初期化に失敗しました:', error)
-        setGameState(prev => ({ 
-          ...prev, 
+        setGameState((prev) => ({
+          ...prev,
           currentTopic: '猫', // フォールバック
-          aiResponse: 'AIサービスの初期化に失敗しました。基本機能のみ利用できます。'
+          aiResponse: 'AIサービスの初期化に失敗しました。基本機能のみ利用できます。',
         }))
       }
     }
-    
+
     initializeGame()
   }, [])
 
@@ -39,8 +39,7 @@ export const useGameState = () => {
     setGameState((prev) => ({ ...prev, isLoading: true }))
 
     try {
-      const service = await getAIService()
-      const response = await service.generateResponse(gameState.userInput, gameState.currentTopic)
+      const response = await aiService.generateResponse(gameState.userInput, gameState.currentTopic)
 
       const isCorrect = response.guess === gameState.currentTopic
       const newScore = isCorrect ? gameState.score + 1 : gameState.score
@@ -66,8 +65,7 @@ export const useGameState = () => {
 
   const nextQuestion = useCallback(async () => {
     try {
-      const service = await getAIService()
-      const newTopic = service.getRandomTopic()
+      const newTopic = aiService.getRandomTopic()
       setGameState((prev) => ({
         ...prev,
         currentTopic: newTopic,
@@ -82,8 +80,7 @@ export const useGameState = () => {
 
   const resetGame = useCallback(async () => {
     try {
-      const service = await getAIService()
-      const newTopic = service.getRandomTopic()
+      const newTopic = aiService.getRandomTopic()
       setGameState({
         currentTopic: newTopic,
         userInput: '',
