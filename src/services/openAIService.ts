@@ -47,7 +47,7 @@ export class OpenAIService extends BaseAIService {
     }
   }
 
-  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
+  async generateResponse(userInput: string, _correctAnswer: string): Promise<AIResponse> {
     try {
       if (!this.apiKey) {
         return this.createErrorResponse(ERROR_MESSAGES.OPENAI_API_KEY_MISSING)
@@ -59,7 +59,7 @@ export class OpenAIService extends BaseAIService {
       }
 
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4-1106-preview', // GPT-4 Turboを使用
+        model: 'gpt-4.1-mini-2025-04-14', // GPT-4 Turboを使用
         messages: [
           INITIAL_SYSTEM_PROMPT,
           {
@@ -100,7 +100,7 @@ export class OpenAIService extends BaseAIService {
       }
 
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4-1106-preview',
+        model: 'gpt-4.1-mini-2025-04-14',
         messages: [
           INITIAL_SYSTEM_PROMPT,
           {

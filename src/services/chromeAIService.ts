@@ -61,7 +61,7 @@ export class ChromeAIService extends BaseAIService {
     }
   }
 
-  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
+  async generateResponse(userInput: string, _correctAnswer: string): Promise<AIResponse> {
     try {
       // モデルの初期化を確認
       const initialized = await this.initializeModel()
