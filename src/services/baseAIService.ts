@@ -1,8 +1,8 @@
-import { AIResponse } from '../types'
+import { AIResponse } from '../types/gameTypes'
 import { IAIService } from './types'
-import { getRandomTopic } from '../data'
-import { createReasoningGamePrompt, createInputValidationPrompt } from '../prompts'
-import { ERROR_MESSAGES } from '../constants'
+import { getRandomTopic } from '../data/topics'
+import { createReasoningGamePrompt, createInputValidationPrompt } from '../prompts/gamePrompts'
+import { ERROR_MESSAGES } from '../constants/gameConstants'
 
 /**
  * AIサービスの基底クラス

@@ -1,8 +1,8 @@
-import { AIResponse } from '../types'
+import { AIResponse } from '../types/gameTypes'
 import { IAIService, AIServiceType } from './types'
 import { ChromeAIService } from './chromeAIService'
 import { OpenAIService } from './openAIService'
-import { getRandomTopic } from '../data'
+import { getRandomTopic } from '../data/topics'
 
 /**
  * AIサービスの設定

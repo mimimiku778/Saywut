@@ -1,4 +1,4 @@
-import { AIResponse } from '../types'
+import { AIResponse } from '../types/gameTypes'
 
 /**
  * AIサービスの基本インターフェース

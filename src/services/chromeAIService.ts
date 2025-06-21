@@ -1,6 +1,6 @@
-import { AIResponse } from '../types'
+import { AIResponse } from '../types/gameTypes'
 import { BaseAIService } from './baseAIService'
-import { ERROR_MESSAGES } from '../constants'
+import { ERROR_MESSAGES } from '../constants/gameConstants'
 import { INITIAL_SYSTEM_PROMPT } from '../prompts/gamePrompts'
 
 /**

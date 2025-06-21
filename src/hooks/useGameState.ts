@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
-import { GameState } from '../types'
+import { GameState } from '../types/gameTypes'
 import { aiService } from '../services/aiService'
-import { getRandomTopic } from '../data'
+import { getRandomTopic } from '../data/topics'
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
