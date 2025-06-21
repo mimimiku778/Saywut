@@ -1,7 +1,8 @@
 import { AIResponse } from '../types/gameTypes'
 import { BaseAIService } from './baseAIService'
 import { ERROR_MESSAGES } from '../constants/gameConstants'
-import { INITIAL_SYSTEM_PROMPT } from '../prompts/gamePrompts'
+import { getInitialSystemPrompt } from '../prompts/gamePrompts'
+import type { DifficultyLevel } from '../data/topics'
 
 /**
  * Chrome Built-in AI (Gemini Nano) を使用するサービス
@@ -29,7 +30,7 @@ export class ChromeAIService extends BaseAIService {
     }
   }
 
-  private async initializeModel(): Promise<boolean> {
+  private async initializeModel(difficulty: DifficultyLevel = 'normal'): Promise<boolean> {
     try {
       if (this.isInitialized && this.model) {
         return true
@@ -46,7 +47,7 @@ export class ChromeAIService extends BaseAIService {
 
       // 新しいAPI仕様を使用してモデルを作成
       this.model = await (globalThis as any).LanguageModel.create({
-        initialPrompts: [INITIAL_SYSTEM_PROMPT],
+        initialPrompts: [getInitialSystemPrompt(difficulty)],
         temperature: 0.7,
         topK: 3,
       })
@@ -61,15 +62,15 @@ export class ChromeAIService extends BaseAIService {
     }
   }
 
-  async generateResponse(userInput: string, _correctAnswer: string): Promise<AIResponse> {
+  async generateResponse(userInput: string, _correctAnswer: string, difficulty: DifficultyLevel = 'normal'): Promise<AIResponse> {
     try {
       // モデルの初期化を確認
-      const initialized = await this.initializeModel()
+      const initialized = await this.initializeModel(difficulty)
       if (!initialized) {
         return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_UNAVAILABLE)
       }
 
-      const prompt = this.createPrompt(userInput)
+      const prompt = this.createPrompt(userInput, difficulty)
 
       // 新しい仕様では単純にpromptメソッドを使用
       console.log(prompt)
@@ -82,15 +83,15 @@ export class ChromeAIService extends BaseAIService {
     }
   }
 
-  async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
+  async validateUserInput(userInput: string, correctAnswer: string, difficulty: DifficultyLevel = 'normal'): Promise<AIResponse> {
     try {
       // モデルの初期化を確認
-      const initialized = await this.initializeModel()
+      const initialized = await this.initializeModel(difficulty)
       if (!initialized) {
         return this.createErrorResponse(ERROR_MESSAGES.CHROME_AI_UNAVAILABLE)
       }
 
-      const validationPrompt = this.createValidationPrompt(userInput, correctAnswer)
+      const validationPrompt = this.createValidationPrompt(userInput, correctAnswer, difficulty)
       const responseText = await this.model.prompt(validationPrompt)
 
       return this.parseAIResponse(responseText)

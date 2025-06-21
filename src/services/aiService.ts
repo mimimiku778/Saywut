@@ -2,7 +2,7 @@ import { AIResponse } from '../types/gameTypes'
 import { IAIService, AIServiceType } from './types'
 import { ChromeAIService } from './chromeAIService'
 import { OpenAIService } from './openAIService'
-import { getRandomTopic } from '../data/topics'
+import { getRandomTopic, type DifficultyLevel } from '../data/topics'
 
 /**
  * AIサービスの設定
@@ -78,22 +78,22 @@ export async function getAvailableServices(): Promise<{ type: AIServiceType; nam
 
 // 簡単なインターフェースのエクスポート
 export const aiService = {
-  async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
+  async generateResponse(userInput: string, correctAnswer: string, difficulty: DifficultyLevel = 'normal'): Promise<AIResponse> {
     const service = await createSelectedService()
-    return service.generateResponse(userInput, correctAnswer)
+    return service.generateResponse(userInput, correctAnswer, difficulty)
   },
 
-  async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
+  async validateUserInput(userInput: string, correctAnswer: string, difficulty: DifficultyLevel = 'normal'): Promise<AIResponse> {
     const service = await createSelectedService()
-    return service.validateUserInput(userInput, correctAnswer)
+    return service.validateUserInput(userInput, correctAnswer, difficulty)
   },
 
   setServiceType(type: AIServiceType): void {
     setServiceType(type)
   },
 
-  getRandomTopic(): string {
-    return getRandomTopic()
+  getRandomTopic(difficulty: DifficultyLevel = 'normal'): string {
+    return getRandomTopic(difficulty)
   },
 
   setOpenAIApiKey(apiKey: string): void {

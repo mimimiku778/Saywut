@@ -6,12 +6,13 @@ export interface GameState {
   isCorrect: boolean | null
   score: number
   totalQuestions: number
+  difficulty: 'normal' | 'hard'
 }
 
 export interface QuizTopic {
   word: string
   category: string
-  difficulty: 'easy' | 'medium' | 'hard'
+  difficulty: 'normal' | 'hard'
 }
 
 export interface AIResponse {

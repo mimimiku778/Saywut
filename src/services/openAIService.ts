@@ -2,7 +2,8 @@ import OpenAI from 'openai'
 import { AIResponse } from '../types/gameTypes'
 import { BaseAIService } from './baseAIService'
 import { ERROR_MESSAGES } from '../constants/gameConstants'
-import { INITIAL_SYSTEM_PROMPT } from '../prompts/gamePrompts'
+import { getInitialSystemPrompt } from '../prompts/gamePrompts'
+import type { DifficultyLevel } from '../data/topics'
 
 /**
  * OpenAI API を使用するサービス
@@ -47,7 +48,7 @@ export class OpenAIService extends BaseAIService {
     }
   }
 
-  async generateResponse(userInput: string, _correctAnswer: string): Promise<AIResponse> {
+  async generateResponse(userInput: string, _correctAnswer: string, difficulty: DifficultyLevel = 'normal'): Promise<AIResponse> {
     try {
       if (!this.apiKey) {
         return this.createErrorResponse(ERROR_MESSAGES.OPENAI_API_KEY_MISSING)
@@ -61,10 +62,10 @@ export class OpenAIService extends BaseAIService {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4.1-mini-2025-04-14', // GPT-4 Turboを使用
         messages: [
-          INITIAL_SYSTEM_PROMPT,
+          getInitialSystemPrompt(difficulty),
           {
             role: 'user',
-            content: this.createPrompt(userInput),
+            content: this.createPrompt(userInput, difficulty),
           },
         ],
         temperature: 0.7,
@@ -88,7 +89,7 @@ export class OpenAIService extends BaseAIService {
     }
   }
 
-  async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
+  async validateUserInput(userInput: string, correctAnswer: string, difficulty: DifficultyLevel = 'normal'): Promise<AIResponse> {
     try {
       if (!this.apiKey) {
         return this.createErrorResponse(ERROR_MESSAGES.OPENAI_API_KEY_MISSING)
@@ -102,10 +103,10 @@ export class OpenAIService extends BaseAIService {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4.1-mini-2025-04-14',
         messages: [
-          INITIAL_SYSTEM_PROMPT,
+          getInitialSystemPrompt(difficulty),
           {
             role: 'user',
-            content: this.createValidationPrompt(userInput, correctAnswer),
+            content: this.createValidationPrompt(userInput, correctAnswer, difficulty),
           },
         ],
         temperature: 0.3,

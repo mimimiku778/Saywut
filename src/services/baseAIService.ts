@@ -1,6 +1,6 @@
 import { AIResponse } from '../types/gameTypes'
 import { IAIService } from './types'
-import { getRandomTopic } from '../data/topics'
+import { getRandomTopic, type DifficultyLevel } from '../data/topics'
 import { createReasoningGamePrompt, createInputValidationPrompt } from '../prompts/gamePrompts'
 import { ERROR_MESSAGES } from '../constants/gameConstants'
 
@@ -8,14 +8,14 @@ import { ERROR_MESSAGES } from '../constants/gameConstants'
  * AIサービスの基底クラス
  */
 export abstract class BaseAIService implements IAIService {
-  abstract generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse>
+  abstract generateResponse(userInput: string, correctAnswer: string, difficulty?: DifficultyLevel): Promise<AIResponse>
   abstract getServiceName(): string
   abstract isAvailable(): Promise<boolean>
 
   /**
    * ユーザー入力値を検証する
    */
-  abstract validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse>
+  abstract validateUserInput(userInput: string, correctAnswer: string, difficulty?: DifficultyLevel): Promise<AIResponse>
 
   getRandomTopic(): string {
     return getRandomTopic()
@@ -24,16 +24,16 @@ export abstract class BaseAIService implements IAIService {
   /**
    * AIへのプロンプトを作成する（簡素版）
    */
-  protected createPrompt(userInput: string): string {
-    return createReasoningGamePrompt(userInput)
+  protected createPrompt(userInput: string, difficulty: DifficultyLevel = 'normal'): string {
+    return createReasoningGamePrompt(userInput, difficulty)
   }
 
   /**
    * 入力値検証用のプロンプトを作成する
    */
-  protected createValidationPrompt(userInput: string, correctAnswer: string): string {
-    console.log(createInputValidationPrompt(userInput, correctAnswer))
-    return createInputValidationPrompt(userInput, correctAnswer)
+  protected createValidationPrompt(userInput: string, correctAnswer: string, difficulty: DifficultyLevel = 'normal'): string {
+    console.log(createInputValidationPrompt(userInput, correctAnswer, difficulty))
+    return createInputValidationPrompt(userInput, correctAnswer, difficulty)
   }
 
   /**

@@ -3,21 +3,26 @@ import { GameBoard } from './components/GameBoard'
 import { ResultDisplay } from './components/ResultDisplay'
 import { GameRules } from './components/GameRules'
 import { AIServiceSelector } from './components/AIServiceSelector'
+import { DifficultySelector } from './components/DifficultySelector'
 import { useGameState } from './hooks/useGameState'
 
 function App() {
-  const { gameState, submitGuess, nextQuestion, resetGame, updateUserInput } = useGameState()
+  const { gameState, submitGuess, nextQuestion, resetGame, updateUserInput, changeDifficulty } = useGameState()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <Header score={gameState.score} totalQuestions={gameState.totalQuestions} />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* AIサービス選択 */}
-        <div className="mb-6">
+        {/* 設定エリア */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
             <AIServiceSelector />
           </div>
+          <DifficultySelector 
+            currentDifficulty={gameState.difficulty}
+            onDifficultyChange={changeDifficulty}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -30,6 +35,7 @@ function App() {
               onSubmit={submitGuess}
               isLoading={gameState.isLoading}
               disabled={gameState.isLoading || gameState.isCorrect !== null}
+              difficulty={gameState.difficulty}
             />
 
             {gameState.aiResponse && (

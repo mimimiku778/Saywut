@@ -1,4 +1,5 @@
 import React from 'react'
+import type { DifficultyLevel } from '../data/topics'
 
 interface GameBoardProps {
   currentTopic: string
@@ -7,6 +8,7 @@ interface GameBoardProps {
   onSubmit: () => void
   isLoading: boolean
   disabled: boolean
+  difficulty: DifficultyLevel
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({
@@ -16,6 +18,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   onSubmit,
   isLoading,
   disabled,
+  difficulty,
 }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,8 +30,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
       <div className="text-center mb-8">
-        <h2 className="text-lg font-medium text-gray-600 mb-2">お題</h2>
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl py-6 px-8">
+        <div className="flex items-center justify-center space-x-4 mb-2">
+          <h2 className="text-lg font-medium text-gray-600">お題</h2>
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+            difficulty === 'hard' 
+              ? 'bg-red-100 text-red-700' 
+              : 'bg-blue-100 text-blue-700'
+          }`}>
+            {difficulty === 'hard' ? 'ハード' : 'ノーマル'}
+          </span>
+        </div>
+        <div className={`text-white rounded-xl py-6 px-8 ${
+          difficulty === 'hard'
+            ? 'bg-gradient-to-r from-red-500 to-pink-600'
+            : 'bg-gradient-to-r from-blue-500 to-purple-600'
+        }`}>
           <span className="text-4xl font-bold">{currentTopic}</span>
         </div>
         <p className="text-sm text-gray-500 mt-3">上記の言葉を使わずに特徴を説明してください</p>

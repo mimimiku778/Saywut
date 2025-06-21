@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { GameState } from '../types/gameTypes'
 import { aiService } from '../services/aiService'
-import { getRandomTopic } from '../data/topics'
+import { getRandomTopic, type DifficultyLevel } from '../data/topics'
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -12,13 +12,14 @@ export const useGameState = () => {
     isCorrect: null,
     score: 0,
     totalQuestions: 0,
+    difficulty: 'normal',
   })
 
   // ゲームの初期化
   useEffect(() => {
     const initializeGame = async () => {
       try {
-        const initialTopic = getRandomTopic()
+        const initialTopic = getRandomTopic(gameState.difficulty)
         setGameState((prev) => ({ ...prev, currentTopic: initialTopic }))
       } catch (error) {
         console.error('ゲームの初期化に失敗しました:', error)
@@ -42,7 +43,8 @@ export const useGameState = () => {
       // 第1段階: ユーザー入力値の検証
       const validationResponse = await aiService.validateUserInput(
         gameState.userInput,
-        gameState.currentTopic
+        gameState.currentTopic,
+        gameState.difficulty
       )
 
       // 検証エラーの場合
@@ -88,7 +90,7 @@ export const useGameState = () => {
       }
 
       // 第2段階: AIによる推理
-      const response = await aiService.generateResponse(gameState.userInput, gameState.currentTopic)
+      const response = await aiService.generateResponse(gameState.userInput, gameState.currentTopic, gameState.difficulty)
       console.log('AI応答:', response.response)
 
       // AIのレスポンスに正解の単語が含まれているかで判定
@@ -116,7 +118,7 @@ export const useGameState = () => {
 
   const nextQuestion = useCallback(async () => {
     try {
-      const newTopic = getRandomTopic()
+      const newTopic = getRandomTopic(gameState.difficulty)
       setGameState((prev) => ({
         ...prev,
         currentTopic: newTopic,
@@ -127,11 +129,11 @@ export const useGameState = () => {
     } catch (error) {
       console.error('次の問題の生成に失敗しました:', error)
     }
-  }, [])
+  }, [gameState.difficulty])
 
   const resetGame = useCallback(async () => {
     try {
-      const newTopic = getRandomTopic()
+      const newTopic = getRandomTopic(gameState.difficulty)
       setGameState({
         currentTopic: newTopic,
         userInput: '',
@@ -140,6 +142,7 @@ export const useGameState = () => {
         isCorrect: null,
         score: 0,
         totalQuestions: 0,
+        difficulty: gameState.difficulty,
       })
     } catch (error) {
       console.error('ゲームのリセットに失敗しました:', error)
@@ -151,12 +154,29 @@ export const useGameState = () => {
         isCorrect: null,
         score: 0,
         totalQuestions: 0,
+        difficulty: gameState.difficulty,
       })
     }
-  }, [])
+  }, [gameState.difficulty])
 
   const updateUserInput = useCallback((input: string) => {
     setGameState((prev) => ({ ...prev, userInput: input }))
+  }, [])
+
+  const changeDifficulty = useCallback(async (newDifficulty: DifficultyLevel) => {
+    try {
+      const newTopic = getRandomTopic(newDifficulty)
+      setGameState((prev) => ({
+        ...prev,
+        difficulty: newDifficulty,
+        currentTopic: newTopic,
+        userInput: '',
+        aiResponse: '',
+        isCorrect: null,
+      }))
+    } catch (error) {
+      console.error('難易度変更に失敗しました:', error)
+    }
   }, [])
 
   return {
@@ -165,5 +185,6 @@ export const useGameState = () => {
     nextQuestion,
     resetGame,
     updateUserInput,
+    changeDifficulty,
   }
 }

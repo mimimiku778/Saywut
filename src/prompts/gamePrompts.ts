@@ -2,26 +2,57 @@
  * AIサービス用のプロンプトテンプレート
  */
 
+import type { DifficultyLevel } from '../data/topics'
+
 /**
- * 推理ゲーム用の初期システムプロンプト
+ * 推理ゲーム用の初期システムプロンプト（難易度別）
  */
-export const INITIAL_SYSTEM_PROMPT = {
-  role: 'system' as const,
-  content: `あなたは高度な推理能力を持つクイズゲームのプレイヤーです。
+export function getInitialSystemPrompt(difficulty: DifficultyLevel = 'normal') {
+  const baseContent = `あなたは高度な推理能力を持つクイズゲームのプレイヤーです。
 以下のルールに従って、ユーザーの説明から答えを推測してください：
 
 1. ユーザーは特定の物や概念について、その名前を使わずに説明します
 2. あなたは与えられた説明から、それが何を指しているか推測します
 3. 推測は単語のみで答え、余計な説明は加えません
 4. 日本語の名詞で答えてください
-5. 確信度が低い場合でも、最も可能性が高いと思われる答えを1つだけ提示してください`,
+5. 確信度が低い場合でも、最も可能性が高いと思われる答えを1つだけ提示してください`
+
+  const difficultyContent = getDifficultySpecificContent(difficulty)
+  
+  return {
+    role: 'system' as const,
+    content: `${baseContent}\n\n${difficultyContent}`,
+  }
 }
 
 /**
- * 推理ゲーム用のユーザープロンプトを生成する（強化版）
+ * 難易度別の追加指示を取得する
  */
-export function createReasoningGamePrompt(userInput: string): string {
-  return `以下の説明から、何を指しているか推測してください。
+function getDifficultySpecificContent(difficulty: DifficultyLevel): string {
+  switch (difficulty) {
+    case 'normal':
+      return `【難易度：ノーマル】
+- 日常的で馴染みのある概念について推測してください
+- 直感的で分かりやすい表現を重視してください`
+
+    case 'hard':
+      return `【難易度：ハード】
+- 抽象的で哲学的な概念について推測してください
+- 感情や価値観に関する複雑な表現を正確に解釈する必要があります
+- 人間関係、人生観、感情、精神的な概念などが含まれます
+- 比喩的で詩的な説明も多く含まれます
+- より深い人生経験と感受性が求められます`
+
+    default:
+      return ''
+  }
+}
+
+/**
+ * 推理ゲーム用のユーザープロンプトを生成する（難易度別強化版）
+ */
+export function createReasoningGamePrompt(userInput: string, difficulty: DifficultyLevel = 'normal'): string {
+  const basePrompt = `以下の説明から、何を指しているか推測してください。
 
 【説明】
 ${userInput}
@@ -30,48 +61,107 @@ ${userInput}
 - 答えは日本語の単語1つだけで回答してください
 - 「〜だと思います」などの推測表現は使わないでください
 - 説明文や理由は不要です
-- 最も可能性が高いと思われる答えを1つだけ答えてください
+- 最も可能性が高いと思われる答えを1つだけ答えてください`
 
-【回答】`
+  const difficultyHint = getDifficultyHint(difficulty)
+  
+  return `${basePrompt}\n\n${difficultyHint}\n\n【回答】`
 }
 
 /**
- * ユーザー入力値検証用のプロンプトを生成する（強化版）
+ * 難易度別のヒントを生成する
  */
-export function createInputValidationPrompt(userInput: string, correctAnswer: string): string {
-  return `あなたは厳格なルール判定を行う審査員です。
+function getDifficultyHint(difficulty: DifficultyLevel): string {
+  switch (difficulty) {
+    case 'normal':
+      return `【ヒント】
+- 日常生活でよく見かける身近なものです
+- 一般的で馴染みのある概念を考えてください`
+
+    case 'hard':
+      return `【ヒント】
+- 抽象的で哲学的な概念です
+- 深い思考と人生経験が必要です
+- 感情、価値観、人間関係、人生観に関する概念を中心に考えてください
+- 誰もが知っているが説明が難しい概念です`
+
+    default:
+      return ''
+  }
+}
+
+/**
+ * ユーザー入力値検証用のプロンプトを生成する（難易度別強化版）
+ */
+export function createInputValidationPrompt(userInput: string, correctAnswer: string, difficulty: DifficultyLevel = 'normal'): string {
+  const baseValidation = `あなたは厳格なルール判定を行う審査員です。
 以下の入力内容が、ゲームのルールに違反していないか判定してください。
 
 【ゲームのルール】
 1. お題の言葉「${correctAnswer}」そのものを使ってはいけない
 2. お題の言葉を別の言語（英語、カタカナ英語、ローマ字、中国語、韓国語など）で表現してはいけない
 3. お題の言葉を含む複合語（お題の言葉が語の一部として含まれている単語）も使用禁止
-4. お題の言葉と意味的に関連するだけの表現は許可される（例：風→「吹く」「そよぐ」）
+4. お題の言葉と意味的に関連するだけの表現は許可される
 
-【複合語の定義】
-- お題の言葉が語の一部として組み込まれている単語
-- 例：「桜」が含まれる「桜餅」「桜並木」、「犬」が含まれる「子犬」「犬小屋」など
+【複合語の定義と重要な注意】
+- 複合語とは、お題の言葉「${correctAnswer}」の文字や読みが「物理的に含まれている」単語のみ
+- 例：「桜」→「桜餅」「桜並木」（「桜」の文字が含まれる）
+- 例：「犬」→「子犬」「犬小屋」「愛犬」（「犬」の文字が含まれる）
 
-【判定の明確化】
-- 形態素として「${correctAnswer}」が含まれている場合のみNG
-- 意味的な関連や動作・状態の表現だけではNG判定しない
-- 例：風→「吹く」「そよぐ」「嵐」「台風」はOK、「風車」「風邪」はNG
+【絶対にNGにしてはいけない表現】
+- 特徴や性質を表現した言葉（文字・読みが含まれていない場合）
+- 例：「虹」→「なないろのもの」「七色」「アーチ状」「雨上がり」はすべてOK
+- 例：「桜」→「ピンクの花」「春の花」「花見」はすべてOK
+- 例：「犬」→「四本足」「忠実」「ペット」「鳴く動物」はすべてOK
 
-【違反となる例】
-- お題が「桜」の場合：「さくら」「サクラ」「sakura」「cherry blossom」「桜の木」「桜餅」など
-- お題が「猫」の場合：「ねこ」「ネコ」「neko」「cat」「キャット」「猫科」「子猫」など
+【判定の厳格なルール】
+1. 入力文に「${correctAnswer}」の文字が含まれているか文字レベルでチェック
+2. 入力文に「${correctAnswer}」の読みが含まれているか音韻レベルでチェック
+3. 上記のいずれかに該当する場合のみNG、それ以外はすべてOK`
 
-【許可される表現】
-- 擬音語・擬態語（例：犬→「わんわん」、猫→「にゃーにゃー」）
-- 幼児語（例：犬→「わんわん」、車→「ぶーぶー」）
-- 特徴を説明する表現（例：犬→「鳴く動物」、車→「走る乗り物」）
+  const difficultyRules = getDifficultyValidationRules(difficulty, correctAnswer)
+  
+  return `${baseValidation}
 
-【判定基準】
-- 上記のルールに違反していない場合：「OK」とだけ出力
-- 違反している場合：「NG: [具体的な違反内容]」の形式で出力
+${difficultyRules}
 
 【入力内容】
 "${userInput}"
 
 【判定結果】`
+}
+
+/**
+ * 難易度別の追加検証ルールを生成する
+ */
+function getDifficultyValidationRules(difficulty: DifficultyLevel, correctAnswer: string): string {
+  switch (difficulty) {
+    case 'normal':
+      return `【難易度：ノーマル】
+- 基本的なルール違反のみチェック
+- 寛容な判定を心がける
+
+【判定基準】
+- 文字・読みレベルでお題の言葉が含まれていない場合：「OK」とだけ出力
+- 文字・読みレベルでお題の言葉が含まれている場合：「NG: [具体的な違反内容]」で出力`
+
+    case 'hard':
+      return `【難易度：ハード】
+- 基本的なルール違反のみチェック
+- 抽象概念でも寛容な判定を心がける
+- 文字・読みレベルでの一致のみを厳格にチェック
+
+【判定基準】
+- 文字・読みレベルでお題の言葉が含まれていない場合：「OK」とだけ出力
+- 文字・読みレベルでお題の言葉が含まれている場合：「NG: [具体的な違反内容]」で出力
+
+【重要な注意】
+- 抽象概念の特徴や性質を表現することは許可される
+- 例：「記憶」→「記録」「思い出」「覚える」「忘れる」はすべてOK（文字が含まれていない）
+- 例：「恋愛」→「愛情」「好き」「恋人」「デート」はすべてOK（文字が含まれていない）
+- 例：「友情」→「友達」「仲間」「絆」「信頼」はすべてOK（文字が含まれていない）`
+
+    default:
+      return ''
+  }
 }
