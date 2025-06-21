@@ -60,7 +60,7 @@ export async function createSelectedService(): Promise<IAIService> {
  */
 export async function getAvailableServices(): Promise<{ type: AIServiceType; name: string }[]> {
   const available: { type: AIServiceType; name: string }[] = []
-  const serviceTypes: AIServiceType[] = ['chrome-ai', 'openai']
+  const serviceTypes: AIServiceType[] = ['openai', 'chrome-ai']
 
   for (const type of serviceTypes) {
     try {
