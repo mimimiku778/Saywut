@@ -2,6 +2,7 @@ import OpenAI from 'openai'
 import { AIResponse } from '../types'
 import { BaseAIService } from './baseAIService'
 import { ERROR_MESSAGES } from '../constants'
+import { INITIAL_SYSTEM_PROMPT } from '../prompts/gamePrompts'
 
 /**
  * OpenAI API を使用するサービス
@@ -58,6 +59,7 @@ export class OpenAIService extends BaseAIService {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4-1106-preview', // GPT-4 Turboを使用
         messages: [
+          INITIAL_SYSTEM_PROMPT,
           {
             role: 'user',
             content: this.createPrompt(userInput),
@@ -98,6 +100,7 @@ export class OpenAIService extends BaseAIService {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4-1106-preview',
         messages: [
+          INITIAL_SYSTEM_PROMPT,
           {
             role: 'user',
             content: this.createValidationPrompt(userInput, correctAnswer),

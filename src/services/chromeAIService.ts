@@ -1,6 +1,7 @@
 import { AIResponse } from '../types'
 import { BaseAIService } from './baseAIService'
 import { ERROR_MESSAGES } from '../constants'
+import { INITIAL_SYSTEM_PROMPT } from '../prompts/gamePrompts'
 
 /**
  * Chrome Built-in AI (Gemini Nano) を使用するサービス
@@ -45,6 +46,7 @@ export class ChromeAIService extends BaseAIService {
 
       // 新しいAPI仕様を使用してモデルを作成
       this.model = await (globalThis as any).LanguageModel.create({
+        initialPrompts: [INITIAL_SYSTEM_PROMPT],
         temperature: 0.7,
         topK: 3,
       })
