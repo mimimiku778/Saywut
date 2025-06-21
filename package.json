@@ -7,16 +7,23 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css}\"",
     "test": "vitest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Akira-Papa/Claude-Code-Communication.git"
   },
-  "keywords": ["ai", "game", "react", "quiz"],
+  "keywords": [
+    "ai",
+    "game",
+    "react",
+    "quiz"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "prettier": "^3.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

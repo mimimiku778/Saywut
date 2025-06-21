@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 
 interface GameBoardProps {
-  currentTopic: string;
-  userInput: string;
-  onInputChange: (value: string) => void;
-  onSubmit: () => void;
-  isLoading: boolean;
-  disabled: boolean;
+  currentTopic: string
+  userInput: string
+  onInputChange: (value: string) => void
+  onSubmit: () => void
+  isLoading: boolean
+  disabled: boolean
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({
@@ -15,14 +15,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   onInputChange,
   onSubmit,
   isLoading,
-  disabled
+  disabled,
 }) => {
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!disabled && userInput.trim()) {
-      onSubmit();
+      onSubmit()
     }
-  };
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
@@ -31,9 +31,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl py-6 px-8">
           <span className="text-4xl font-bold">{currentTopic}</span>
         </div>
-        <p className="text-sm text-gray-500 mt-3">
-          上記の言葉を使わずに特徴を説明してください
-        </p>
+        <p className="text-sm text-gray-500 mt-3">上記の言葉を使わずに特徴を説明してください</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -67,5 +65,5 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </button>
       </form>
     </div>
-  );
-};
+  )
+}

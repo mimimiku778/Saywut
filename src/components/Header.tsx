@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
 interface HeaderProps {
-  score: number;
-  totalQuestions: number;
+  score: number
+  totalQuestions: number
 }
 
 export const Header: React.FC<HeaderProps> = ({ score, totalQuestions }) => {
@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ score, totalQuestions }) => {
             </div>
             <h1 className="text-2xl font-bold text-gray-900">AIクイズゲーム</h1>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="bg-gray-100 rounded-full px-4 py-2">
               <span className="text-sm font-medium text-gray-600">
@@ -40,5 +40,5 @@ export const Header: React.FC<HeaderProps> = ({ score, totalQuestions }) => {
         </div>
       </div>
     </header>
-  );
-};
+  )
+}

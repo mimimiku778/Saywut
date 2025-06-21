@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const GameRules: React.FC = () => {
   return (
@@ -7,25 +7,35 @@ export const GameRules: React.FC = () => {
         <span className="mr-2">📖</span>
         ゲームのルール
       </h3>
-      
+
       <div className="space-y-3 text-sm text-gray-700">
         <div className="flex items-start space-x-3">
-          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            1
+          </span>
           <p>画面に表示されたお題の言葉を確認しましょう</p>
         </div>
-        
+
         <div className="flex items-start space-x-3">
-          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
-          <p><strong>お題の言葉を使わずに</strong>その特徴を説明してください</p>
+          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            2
+          </span>
+          <p>
+            <strong>お題の言葉を使わずに</strong>その特徴を説明してください
+          </p>
         </div>
-        
+
         <div className="flex items-start space-x-3">
-          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            3
+          </span>
           <p>AIがあなたの説明から答えを推測します</p>
         </div>
-        
+
         <div className="flex items-start space-x-3">
-          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
+          <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            4
+          </span>
           <p>AIの推測が正解なら成功！理由付きで結果を表示します</p>
         </div>
       </div>
@@ -40,5 +50,5 @@ export const GameRules: React.FC = () => {
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}

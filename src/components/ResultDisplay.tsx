@@ -1,40 +1,50 @@
-import React from 'react';
+import React from 'react'
 
 interface ResultDisplayProps {
-  aiResponse: string;
-  isCorrect: boolean | null;
-  onNextQuestion: () => void;
-  onResetGame: () => void;
+  aiResponse: string
+  isCorrect: boolean | null
+  onNextQuestion: () => void
+  onResetGame: () => void
 }
 
 export const ResultDisplay: React.FC<ResultDisplayProps> = ({
   aiResponse,
   isCorrect,
   onNextQuestion,
-  onResetGame
+  onResetGame,
 }) => {
-  if (!aiResponse) return null;
+  if (!aiResponse) return null
 
-  const resultColor = isCorrect === true ? 'green' : isCorrect === false ? 'red' : 'gray';
-  const resultIcon = isCorrect === true ? '🎉' : isCorrect === false ? '😔' : '🤖';
-  const resultText = isCorrect === true ? '正解！' : isCorrect === false ? '不正解' : '結果';
+  const resultColor = isCorrect === true ? 'green' : isCorrect === false ? 'red' : 'gray'
+  const resultIcon = isCorrect === true ? '🎉' : isCorrect === false ? '😔' : '🤖'
+  const resultText = isCorrect === true ? '正解！' : isCorrect === false ? '不正解' : '結果'
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
       <div className="text-center mb-6">
-        <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${
-          isCorrect === true ? 'bg-green-100 text-green-700' : 
-          isCorrect === false ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
-        }`}>
+        <div
+          className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${
+            isCorrect === true
+              ? 'bg-green-100 text-green-700'
+              : isCorrect === false
+                ? 'bg-red-100 text-red-700'
+                : 'bg-gray-100 text-gray-700'
+          }`}
+        >
           <span className="text-xl">{resultIcon}</span>
           <span className="font-semibold">{resultText}</span>
         </div>
       </div>
 
-      <div className={`p-6 rounded-xl border-2 ${
-        isCorrect === true ? 'bg-green-50 border-green-200' : 
-        isCorrect === false ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'
-      }`}>
+      <div
+        className={`p-6 rounded-xl border-2 ${
+          isCorrect === true
+            ? 'bg-green-50 border-green-200'
+            : isCorrect === false
+              ? 'bg-red-50 border-red-200'
+              : 'bg-gray-50 border-gray-200'
+        }`}
+      >
         <h3 className="font-semibold text-gray-900 mb-3">AIの回答</h3>
         <div className="whitespace-pre-line text-gray-700 text-sm leading-relaxed">
           {aiResponse}
@@ -56,5 +66,5 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
