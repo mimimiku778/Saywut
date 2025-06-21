@@ -1,13 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 .retro {
   font-family:
+    "DotGothic16",
     "Press Start 2P",
     system-ui,
     -apple-system,
     sans-serif;
-  line-height: 1.5;
-  letter-spacing: 0.5px;
+  line-height: 1.6;
+  letter-spacing: 0.3px;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
@@ -20,14 +22,11 @@
   100% { transform: scale(1); }
 }
 
+/* Disable hover animation for cleaner UI */
 .retro:hover {
-  animation: pixelate 0.3s ease-in-out;
+  /* animation: pixelate 0.3s ease-in-out; */
 }
 
-/* Custom 8bit text shadow effects */
-.retro-shadow {
-  text-shadow: 2px 2px 0px #000000;
-}
 
 /* 8bit style scrollbar */
 .retro::-webkit-scrollbar {

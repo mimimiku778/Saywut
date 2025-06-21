@@ -60,7 +60,7 @@ export class OpenAIService extends BaseAIService {
       }
 
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4.1-mini-2025-04-14', // GPT-4 Turboを使用
+        model: 'gpt-4.1-2025-04-14', // GPT-4 Turboを使用
         messages: [
           getInitialSystemPrompt(difficulty),
           {
@@ -101,7 +101,7 @@ export class OpenAIService extends BaseAIService {
       }
 
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4.1-mini-2025-04-14',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           getInitialSystemPrompt(difficulty),
           {

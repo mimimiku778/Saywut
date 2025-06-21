@@ -37,17 +37,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           <h2 className="text-lg font-medium">お題</h2>
           <span className={`px-3 py-1 text-xs font-medium retro ${
             difficulty === 'hard' 
-              ? 'bg-red-500 text-white' 
-              : 'bg-blue-500 text-white'
+              ? 'bg-destructive text-destructive-foreground' 
+              : 'bg-secondary text-secondary-foreground'
           }`}>
             {difficulty === 'hard' ? 'ハード' : 'ノーマル'}
           </span>
         </div>
-        <div className={`text-white py-6 px-8 retro ${
-          difficulty === 'hard'
-            ? 'bg-red-600'
-            : 'bg-blue-600'
-        }`}>
+        <div className="py-6 px-8 retro bg-primary text-primary-foreground">
           <span className="text-4xl font-bold retro">{currentTopic}</span>
         </div>
         <p className="text-sm mt-3 retro">上記の言葉を使わずに特徴を説明してください</p>

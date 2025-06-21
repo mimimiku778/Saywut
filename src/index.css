@@ -6,50 +6,50 @@
 
 @layer base {
   :root {
-    /* 8bit/NES color palette */
-    --background: 210 100% 95%; /* Light blue-white */
-    --foreground: 0 0% 0%; /* Pure black */
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 0 0% 0%; /* Black */
+    /* Undertale Light Theme - Surface/UI colors */
+    --background: 0 0% 100%; /* Pure white like battle UI */
+    --foreground: 0 0% 0%; /* Pure black text */
+    --card: 0 0% 95%; /* Light gray cards */
+    --card-foreground: 0 0% 0%; /* Black text on cards */
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
-    --primary: 220 100% 40%; /* Classic blue */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 200 30% 85%; /* Light gray-blue */
-    --secondary-foreground: 0 0% 20%;
-    --muted: 200 30% 85%;
+    --primary: 45 100% 51%; /* Undertale golden yellow #ffc90e */
+    --primary-foreground: 0 0% 0%;
+    --secondary: 192 67% 59%; /* Light blue #67a4e0 */
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
     --muted-foreground: 0 0% 45%;
-    --accent: 200 30% 85%;
-    --accent-foreground: 0 0% 20%;
-    --destructive: 0 100% 50%; /* Bright red */
+    --accent: 300 94% 51%; /* Magenta #e607f8 */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 82% 60%; /* Undertale red #bf5151 */
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 0%; /* Black borders for pixelated look */
+    --border: 0 0% 0%; /* Black borders */
     --input: 0 0% 0%;
-    --ring: 220 100% 40%;
+    --ring: 45 100% 51%;
     --radius: 0rem; /* No rounded corners for 8bit look */
   }
 
   .dark {
-    /* Dark 8bit theme - like a classic game console */
-    --background: 220 20% 15%; /* Dark blue-gray */
-    --foreground: 0 0% 95%; /* Near white */
-    --card: 220 20% 20%;
-    --card-foreground: 0 0% 95%;
-    --popover: 220 20% 20%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 120 100% 50%; /* Bright green */
+    /* Undertale Dark Theme - Underground atmosphere */
+    --background: 231 26% 8%; /* Very dark blue-gray #0d0d0d with blue tint */
+    --foreground: 0 0% 100%; /* Pure white */
+    --card: 192 41% 25%; /* Dark teal #207587 */
+    --card-foreground: 0 0% 100%;
+    --popover: 231 26% 12%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 45 100% 51%; /* Golden yellow stays same */
     --primary-foreground: 0 0% 0%;
-    --secondary: 220 20% 25%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 220 20% 25%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 220 20% 25%;
-    --accent-foreground: 0 0% 90%;
-    --destructive: 0 100% 60%;
+    --secondary: 192 67% 59%; /* Light blue for contrast */
+    --secondary-foreground: 0 0% 0%;
+    --muted: 231 26% 15%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 300 94% 51%; /* Magenta accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 82% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 60%;
-    --input: 0 0% 60%;
-    --ring: 120 100% 50%;
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+    --ring: 45 100% 51%;
   }
 }
 
