@@ -13,7 +13,9 @@ export class OpenAIService extends BaseAIService {
 
   constructor(apiKey?: string) {
     super()
-    this.apiKey = apiKey || import.meta.env.VITE_OPENAI_API_KEY || null
+    // 環境変数から読み込む際、undefinedチェックを明示的に行う
+    const envApiKey = import.meta.env?.VITE_OPENAI_API_KEY
+    this.apiKey = apiKey || (envApiKey && envApiKey !== 'undefined' ? envApiKey : null)
   }
 
   getServiceName(): string {

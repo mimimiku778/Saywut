@@ -34,33 +34,25 @@ export function createAIService(type: AIServiceType): IAIService {
   }
 }
 
+// 現在選択されているサービスタイプ
+let selectedServiceType: AIServiceType = 'openai'
+
 /**
- * 利用可能な最適なAIサービスを作成する
+ * サービスタイプを設定する
  */
-export async function createBestAvailableService(): Promise<IAIService> {
-  // Chrome AIを最初に試す
-  try {
-    const chromeAI = createAIService('chrome-ai')
-    if (await chromeAI.isAvailable()) {
-      console.log(`${chromeAI.getServiceName()} を使用します`)
-      return chromeAI
-    }
-  } catch (error) {
-    console.warn('Chrome AIが利用できません:', error)
-  }
+export function setServiceType(type: AIServiceType): void {
+  selectedServiceType = type
+}
 
-  // OpenAIにフォールバック
-  try {
-    const openAI = createAIService('openai')
-    if (await openAI.isAvailable()) {
-      console.log(`${openAI.getServiceName()} を使用します`)
-      return openAI
-    }
-  } catch (error) {
-    console.warn('OpenAIが利用できません:', error)
+/**
+ * 選択されたサービスを作成する
+ */
+export async function createSelectedService(): Promise<IAIService> {
+  const service = createAIService(selectedServiceType)
+  if (!(await service.isAvailable())) {
+    throw new Error(`${service.getServiceName()}が利用できません`)
   }
-
-  throw new Error('利用可能なAIサービスがありません')
+  return service
 }
 
 /**
@@ -87,13 +79,17 @@ export async function getAvailableServices(): Promise<{ type: AIServiceType; nam
 // 簡単なインターフェースのエクスポート
 export const aiService = {
   async generateResponse(userInput: string, correctAnswer: string): Promise<AIResponse> {
-    const service = await createBestAvailableService()
+    const service = await createSelectedService()
     return service.generateResponse(userInput, correctAnswer)
   },
 
   async validateUserInput(userInput: string, correctAnswer: string): Promise<AIResponse> {
-    const service = await createBestAvailableService()
+    const service = await createSelectedService()
     return service.validateUserInput(userInput, correctAnswer)
+  },
+
+  setServiceType(type: AIServiceType): void {
+    setServiceType(type)
   },
 
   getRandomTopic(): string {

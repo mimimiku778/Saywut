@@ -28,8 +28,13 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
       setIsLoading(true)
       const services = await getAvailableServices()
       setAvailableServices(services)
-      // 現在のサービスは管理しない（常に最適なサービスを自動選択）
-      setCurrentService(null)
+      
+      // 最初に利用可能なサービスを選択
+      if (services.length > 0 && !currentService) {
+        const firstService = services[0]
+        setCurrentService(firstService.type)
+        aiService.setServiceType(firstService.type)
+      }
     } catch (error) {
       console.error('利用可能なサービスの取得に失敗:', error)
     } finally {
@@ -45,6 +50,7 @@ export const AIServiceSelector: React.FC<AIServiceSelectorProps> = ({
       
       if (isAvailable) {
         setCurrentService(serviceType)
+        aiService.setServiceType(serviceType)
         onServiceChange?.(serviceType)
         console.log(`${service.getServiceName()}が選択されました`)
       } else {

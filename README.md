@@ -56,9 +56,6 @@ AIに言葉を当てさせるシンプルなクイズゲーム - React(Typescrip
 
 1. `.env`ファイルを作成（`.env.example`を参考に）:
 ```bash
-# デフォルトでChrome Built-in AIを使用
-VITE_USE_CHROME_AI=true
-
 # OpenAI API設定（オプション）
 VITE_OPENAI_API_KEY=your_openai_api_key_here
 ```
